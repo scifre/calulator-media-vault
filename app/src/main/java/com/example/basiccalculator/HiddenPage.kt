@@ -35,6 +35,9 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -139,7 +142,7 @@ fun ImageThumbnail(image: Uri){
     )
     AsyncImage(
         model = image,
-        contentDescription = "Image Thumbnaili",
+        contentDescription = "Image Thumbnail",
         modifier = Modifier.fillMaxSize(),
         contentScale = ContentScale.Crop
     )
@@ -167,6 +170,16 @@ fun HiddenPageGalleryView(navController: NavController?, permissionLauncher: Act
         } catch (e: Exception) {
             false
         }
+    }
+    val images = remember{ mutableStateListOf<Uri>() }
+
+    fun loadImages() {
+        val imagesFiles = File(context.filesDir, "vault_gallery").listFiles() { file -> file.isFile }
+            ?.map { file ->
+                Uri.fromFile(file)
+            } ?: emptyList<Uri>()
+        images.clear()
+        images.addAll(imagesFiles)
     }
 
     fun moveImageToVault(context: Context, uris: List<Uri>) {
@@ -197,8 +210,7 @@ fun HiddenPageGalleryView(navController: NavController?, permissionLauncher: Act
                 inputStream?.close()
                 outputStream.close()
 
-                // Delete the original file using ContentResolver
-                //context.contentResolver.delete(uri, null, null)
+
 
                 try {
                     val fileId = ContentUris.parseId(uri)
@@ -223,7 +235,7 @@ fun HiddenPageGalleryView(navController: NavController?, permissionLauncher: Act
                     // Handle permission issues
                     e.printStackTrace()
                 }
-
+                loadImages()
                 /*val rowsDeleted = context.contentResolver.delete(uri, null, null)
                 if (rowsDeleted > 0) {
                     println("Original file deleted successfully: $uri")
@@ -239,7 +251,9 @@ fun HiddenPageGalleryView(navController: NavController?, permissionLauncher: Act
         }
     }
 
-
+    LaunchedEffect(Unit) {
+        loadImages()
+    }
 
 
     val pickMediaLauncher = rememberLauncherForActivityResult(
@@ -280,9 +294,8 @@ fun HiddenPageGalleryView(navController: NavController?, permissionLauncher: Act
     }
 
 
-    val images = File(context.filesDir, "vault_gallery").listFiles(){file-> file.isFile}?.map{file ->
-        Uri.fromFile(file)
-    }?: emptyList<Uri>()
+
+
     //val bottomSheetState = rememberModalBottomSheetState()
     //var showBottomSheet by remember{ mutableStateOf(false) }
     Scaffold(
@@ -300,9 +313,6 @@ fun HiddenPageGalleryView(navController: NavController?, permissionLauncher: Act
                     IconButton(
                         onClick ={
                             launchPhotoPicker()
-
-
-
                         }
                     ) {
                         Icon(
