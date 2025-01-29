@@ -19,7 +19,9 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -47,7 +49,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
-import coil.compose.AsyncImage
+import coil.compose.rememberAsyncImagePainter
 import java.io.File
 import java.io.FileOutputStream
 import java.io.InputStream
@@ -133,20 +135,6 @@ import java.io.InputStream
 
 
 
-@Composable
-fun ImageThumbnail(image: Uri){
-    Box(
-        modifier = Modifier
-            .padding(4.dp)
-            .size(100.dp)
-    )
-    AsyncImage(
-        model = image,
-        contentDescription = "Image Thumbnail",
-        modifier = Modifier.fillMaxSize(),
-        contentScale = ContentScale.Crop
-    )
-}
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -172,8 +160,30 @@ fun HiddenPageGalleryView(navController: NavController?, permissionLauncher: Act
         }
     }
     val images = remember{ mutableStateListOf<Uri>() }
+    @Composable
+    fun ImageThumbnail(image: Uri){
+       /* Box(
+            modifier = Modifier
+                .padding(9.dp)
+                .height(20.dp)
+                .aspectRatio(1f)
+                .clickable {
+                    navController?.navigate("image_viewer/${Uri.encode(image.toString())}")
+                }
+        )*/
+        Image(
+            painter = rememberAsyncImagePainter(image),
+            contentDescription = "Image Thumbnail",
+            modifier = Modifier
+                .aspectRatio(1f)
+                .clickable{
+                    navController?.navigate("image_viewer/${Uri.encode(image.toString())}")
+                },
+            contentScale = ContentScale.Crop
+        )
+    }
 
-    fun loadImages() {
+    fun loadImagesDynamically() {
         val imagesFiles = File(context.filesDir, "vault_gallery").listFiles() { file -> file.isFile }
             ?.map { file ->
                 Uri.fromFile(file)
@@ -235,13 +245,7 @@ fun HiddenPageGalleryView(navController: NavController?, permissionLauncher: Act
                     // Handle permission issues
                     e.printStackTrace()
                 }
-                loadImages()
-                /*val rowsDeleted = context.contentResolver.delete(uri, null, null)
-                if (rowsDeleted > 0) {
-                    println("Original file deleted successfully: $uri")
-                } else {
-                    println("Failed to delete the original file: $uri")
-                }*/
+                loadImagesDynamically()
 
                 println("Image moved to vault: ${destinationFile.absolutePath}")
             } catch (e: Exception) {
@@ -252,7 +256,7 @@ fun HiddenPageGalleryView(navController: NavController?, permissionLauncher: Act
     }
 
     LaunchedEffect(Unit) {
-        loadImages()
+        loadImagesDynamically()
     }
 
 
@@ -326,14 +330,16 @@ fun HiddenPageGalleryView(navController: NavController?, permissionLauncher: Act
         }
     ) {paddingValues->
         LazyVerticalGrid(
-            columns = GridCells.Fixed(4),
+            columns = GridCells.Fixed(3),
             modifier = Modifier
                 .padding(paddingValues)
                 .fillMaxSize()
 
+
         ) {
             items(images.size){index->
-                ImageThumbnail(images[index])
+
+                    ImageThumbnail(images[index])
             }
 
         }

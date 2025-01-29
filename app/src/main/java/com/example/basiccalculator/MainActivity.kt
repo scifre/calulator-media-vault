@@ -1,7 +1,7 @@
 package com.example.basiccalculator
 
 
-import android.os.Build
+import android.net.Uri
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
@@ -9,7 +9,6 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -66,14 +65,12 @@ import kotlinx.coroutines.launch
 class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
     private lateinit var permissionLauncher: ActivityResultLauncher<Array<String>>
-    @RequiresApi(Build.VERSION_CODES.R)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         //setting up permissionLauncher which is needs to be setup in OnCreate
         permissionLauncher = registerForActivityResult(
             ActivityResultContracts.RequestMultiplePermissions()
-        ){
-                permissions->
+        ) { permissions ->
             val allPermissionsGranted = permissions.values.all { it }
             if (allPermissionsGranted) {
                 Toast.makeText(this, "Permission Granted", Toast.LENGTH_SHORT).show()
@@ -86,288 +83,294 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
 
-        val navController = rememberNavController()
+            val navController = rememberNavController()
 
-        //BasicCalculator(navController)
+            //BasicCalculator(navController)
 
-        NavHost(navController = navController, startDestination = "main"){
-            composable("main"){BasicCalculator(navController)}
-            composable("hidden"){ HiddenPageGalleryView(navController = navController, permissionLauncher = permissionLauncher) }
-        }
-        
-        }
-    }
-}
-
+            NavHost(navController = navController, startDestination = "main") {
+                composable("main") { BasicCalculator(navController) }
+                composable("hidden") {HiddenPageGalleryView(navController = navController, permissionLauncher = permissionLauncher)}
+                composable("image_viewer/{imageUri}") { backStackEntry ->
+                        val imageUri = backStackEntry.arguments?.getString("imageUri").let { Uri.parse(it) }
+                        ImageViewer(navController, imageUri)
+                }
 
 
-
-
-@Composable
-fun CalcScreen(num: String, modifier: Modifier = Modifier) {
-
-    Box(
-        modifier = modifier.fillMaxWidth().background(color = Color(0xFFECCBF0)),
-
-    ){
-        Text(
-            text = num,
-            modifier = Modifier.wrapContentSize().align(Alignment.BottomEnd),
-            color = Color.Gray,
-            fontSize = 100.sp,
-            style = TextStyle(
-                shadow = Shadow(
-                    color = Color.Black,
-                    blurRadius = 2f,
-                    offset = Offset(3f, 3f),
-                )
-            ),
-
-            textAlign = TextAlign.End,
-            softWrap = true,
-            maxLines = 6,
-            overflow = TextOverflow.Clip
-            
-        )
-
-    }
-}
-
-@Composable
-fun CalcButton(sym: String, onClick: ()->Unit, modifier: Modifier = Modifier)
-{
-    Button(onClick = {onClick()},
-        modifier = modifier
-            //.padding(2.dp)
-            .size(100.dp),
-        shape = RectangleShape,
-        colors = ButtonDefaults.buttonColors(containerColor = Color.White),
-        border = BorderStroke(width = 0.5.dp, color = Color.White)
-    ){
-        Text(text = sym,
-            fontSize = 55.sp,
-            color = Color.Gray,
-            style = TextStyle(
-                shadow = Shadow(
-                    color = Color.Black,
-                    blurRadius = 6f,
-                    offset = Offset(3f, 3f)
-                )
-            )
-        )
-    }
-}
-
-
-
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun BasicCalculator(navController: NavController){
-
-
-    var displayNum: String by  remember { mutableStateOf("0") }
-    val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)//change initial state of drawer here
-    val scope = rememberCoroutineScope()
-    ModalNavigationDrawer(
-        drawerState = drawerState,
-        drawerContent = {
-            ModalDrawerSheet {
-                Text(
-                    text = "Menu",
-                    modifier = Modifier.padding(16.dp))
-
-                NavigationDrawerItem(
-                    label = {Text(text = "Calc 1")},
-                    selected = false,
-                    onClick = { /*TODO*/ }
-                )
-                NavigationDrawerItem(
-                    label = {Text(text = "Calc 2")},
-                    selected = false,
-                    onClick = { /*TODO*/ }
-                )
             }
         }
+    }
 
-    ) {
-        Scaffold(
-            modifier = Modifier.fillMaxSize(),
-            topBar = {
-                TopAppBar(
-                    title = {
-                        Text(
-                            text = "Basic Calculator",
-                            fontSize = 40.sp,
-                            color = Color.Green
-                        )
 
-                    },
-                    navigationIcon = {
-                        IconButton(
-                            onClick = {
-                                scope.launch {
-                                    drawerState.open()
-                                }
-                            }
-                        ) {
-                                Icon(
-                                imageVector = Icons.Filled.Menu,
-                                contentDescription = "Menu",
-                                modifier = Modifier.size(40.dp)
-                            )
-                        }
-                    }
-                )
-            },
+    @Composable
+    fun CalcScreen(num: String, modifier: Modifier = Modifier) {
 
+        Box(
+            modifier = modifier.fillMaxWidth().background(color = Color(0xFFECCBF0)),
+
+            ) {
+            Text(
+                text = num,
+                modifier = Modifier.wrapContentSize().align(Alignment.BottomEnd),
+                color = Color.Gray,
+                fontSize = 100.sp,
+                style = TextStyle(
+                    shadow = Shadow(
+                        color = Color.Black,
+                        blurRadius = 2f,
+                        offset = Offset(3f, 3f),
+                    )
+                ),
+
+                textAlign = TextAlign.End,
+                softWrap = true,
+                maxLines = 6,
+                overflow = TextOverflow.Clip
 
             )
-        { innerPadding ->
-            Column(modifier = Modifier.padding(innerPadding)) {
 
-                Box(
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Column(modifier = Modifier.wrapContentSize()) {
-                        CalcScreen(num = displayNum, modifier = Modifier.weight(1f))
-                        //First Row --> C % <-
-                        Row() {
-                            CalcButton(
-                                sym = "C",
-                                modifier = Modifier.weight(1f),
-                                onClick = { displayNum = updateScreen(displayNum, "", true) }
-                            )
-                            CalcButton(
-                                sym = "%",
-                                modifier = Modifier.weight(1f),
-                                onClick = { displayNum = updateScreen(displayNum, "%") }
-                            )
-                            Button(
-                                onClick = { displayNum = backspace(displayNum) },
-                                modifier = Modifier
-                                    //.padding(2.dp)
-                                    .size(100.dp)
-                                    .weight(1f),
-                                shape = RectangleShape,
-                                colors = ButtonDefaults.buttonColors(
-                                    containerColor = Color.White,
-                                    contentColor = Color.Black
-                                ),
-                                border = BorderStroke(width = 0.5.dp, color = Color.White)
-                            ) {
-                                Box() {
-                                    Icon(
-                                        imageVector = ImageVector.vectorResource(id = R.drawable.backspace_vec),
-                                        contentDescription = "Backspace_icon",
-                                        tint = Color.Black,
-                                        modifier = Modifier.size(65.dp)
-                                            .offset(x = 1.dp, y = 1.dp)
+        }
+    }
 
-                                    )
-                                    Icon(
-                                        imageVector = ImageVector.vectorResource(id = R.drawable.backspace_vec),
-                                        contentDescription = "Backspace_icon",
-                                        tint = Color.Gray,
-                                        modifier = Modifier.size(65.dp)
+    @Composable
+    fun CalcButton(sym: String, onClick: () -> Unit, modifier: Modifier = Modifier) {
+        Button(
+            onClick = { onClick() },
+            modifier = modifier
+                //.padding(2.dp)
+                .size(100.dp),
+            shape = RectangleShape,
+            colors = ButtonDefaults.buttonColors(containerColor = Color.White),
+            border = BorderStroke(width = 0.5.dp, color = Color.White)
+        ) {
+            Text(
+                text = sym,
+                fontSize = 55.sp,
+                color = Color.Gray,
+                style = TextStyle(
+                    shadow = Shadow(
+                        color = Color.Black,
+                        blurRadius = 6f,
+                        offset = Offset(3f, 3f)
+                    )
+                )
+            )
+        }
+    }
 
-                                    )
-                                }
-                            }
 
-                        }
-                        //Second Row --> 1 2 3 +
-                        Row() {
-                            for (i in 1..3) {
-                                CalcButton(
-                                    sym = i.toString(),
-                                    modifier = Modifier.weight(1f),
-                                    onClick = {
-                                        displayNum = updateScreen(displayNum, i.toString())
-                                    }
-                                )
-                            }
-                            CalcButton(
-                                sym = "+",
-                                modifier = Modifier.weight(1f),
-                                onClick = { displayNum = updateScreen(displayNum, "+") }
+    @OptIn(ExperimentalMaterial3Api::class)
+    @Composable
+    fun BasicCalculator(navController: NavController) {
+
+
+        var displayNum: String by remember { mutableStateOf("0") }
+        val drawerState =
+            rememberDrawerState(initialValue = DrawerValue.Closed)//change initial state of drawer here
+        val scope = rememberCoroutineScope()
+        ModalNavigationDrawer(
+            drawerState = drawerState,
+            drawerContent = {
+                ModalDrawerSheet {
+                    Text(
+                        text = "Menu",
+                        modifier = Modifier.padding(16.dp)
+                    )
+
+                    NavigationDrawerItem(
+                        label = { Text(text = "Calc 1") },
+                        selected = false,
+                        onClick = { /*TODO*/ }
+                    )
+                    NavigationDrawerItem(
+                        label = { Text(text = "Calc 2") },
+                        selected = false,
+                        onClick = { /*TODO*/ }
+                    )
+                }
+            }
+
+        ) {
+            Scaffold(
+                modifier = Modifier.fillMaxSize(),
+                topBar = {
+                    TopAppBar(
+                        title = {
+                            Text(
+                                text = "Basic Calculator",
+                                fontSize = 40.sp,
+                                color = Color.Green
                             )
-                        }
-                        //Third Row --> 4 5 6 -
-                        Row() {
-                            for (i in 4..6) {
-                                CalcButton(
-                                    sym = i.toString(),
-                                    modifier = Modifier.weight(1f),
-                                    onClick = {
-                                        displayNum = updateScreen(displayNum, i.toString())
-                                    }
-                                )
-                            }
-                            CalcButton(
-                                sym = "-",
-                                modifier = Modifier.weight(1f),
-                                onClick = { displayNum = updateScreen(displayNum, "-") }
-                            )
-                        }
-                        //Fourth Row --> 7 8 9 *
-                        Row() {
-                            for (i in 7..9) {
-                                CalcButton(
-                                    sym = i.toString(),
-                                    modifier = Modifier.weight(1f),
-                                    onClick = {
-                                        displayNum = updateScreen(displayNum, i.toString())
-                                    }
-                                )
-                            }
-                            CalcButton(
-                                sym = "*",
-                                modifier = Modifier.weight(1f),
-                                onClick = { displayNum = updateScreen(displayNum, "*") }
-                            )
-                        }
-                        //Fifth Row --> 0 . = /
-                        Row()
-                        {
-                            CalcButton(
-                                sym = ".",
-                                modifier = Modifier.weight(1f),
-                                onClick = { displayNum = updateScreen(displayNum, ".") }
-                            )
-                            CalcButton(
-                                sym = "0",
-                                modifier = Modifier.weight(1f),
-                                onClick = { displayNum = updateScreen(displayNum, "0") }
-                            )
-                            CalcButton(
-                                sym = "=",
-                                modifier = Modifier.weight(1f),
+
+                        },
+                        navigationIcon = {
+                            IconButton(
                                 onClick = {
-                                    displayNum = calculateExpression(expression = displayNum, navController= navController)
+                                    scope.launch {
+                                        drawerState.open()
+                                    }
                                 }
-                            )
-                            CalcButton(
-                                sym = "/",
-                                modifier = Modifier.weight(1f),
-                                onClick = { displayNum = updateScreen(displayNum, "/") }
-                            )
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Filled.Menu,
+                                    contentDescription = "Menu",
+                                    modifier = Modifier.size(40.dp)
+                                )
+                            }
+                        }
+                    )
+                },
+
+
+                )
+            { innerPadding ->
+                Column(modifier = Modifier.padding(innerPadding)) {
+
+                    Box(
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Column(modifier = Modifier.wrapContentSize()) {
+                            CalcScreen(num = displayNum, modifier = Modifier.weight(1f))
+                            //First Row --> C % <-
+                            Row() {
+                                CalcButton(
+                                    sym = "C",
+                                    modifier = Modifier.weight(1f),
+                                    onClick = { displayNum = updateScreen(displayNum, "", true) }
+                                )
+                                CalcButton(
+                                    sym = "%",
+                                    modifier = Modifier.weight(1f),
+                                    onClick = { displayNum = updateScreen(displayNum, "%") }
+                                )
+                                Button(
+                                    onClick = { displayNum = backspace(displayNum) },
+                                    modifier = Modifier
+                                        //.padding(2.dp)
+                                        .size(100.dp)
+                                        .weight(1f),
+                                    shape = RectangleShape,
+                                    colors = ButtonDefaults.buttonColors(
+                                        containerColor = Color.White,
+                                        contentColor = Color.Black
+                                    ),
+                                    border = BorderStroke(width = 0.5.dp, color = Color.White)
+                                ) {
+                                    Box() {
+                                        Icon(
+                                            imageVector = ImageVector.vectorResource(id = R.drawable.backspace_vec),
+                                            contentDescription = "Backspace_icon",
+                                            tint = Color.Black,
+                                            modifier = Modifier.size(65.dp)
+                                                .offset(x = 1.dp, y = 1.dp)
+
+                                        )
+                                        Icon(
+                                            imageVector = ImageVector.vectorResource(id = R.drawable.backspace_vec),
+                                            contentDescription = "Backspace_icon",
+                                            tint = Color.Gray,
+                                            modifier = Modifier.size(65.dp)
+
+                                        )
+                                    }
+                                }
+
+                            }
+                            //Second Row --> 1 2 3 +
+                            Row() {
+                                for (i in 1..3) {
+                                    CalcButton(
+                                        sym = i.toString(),
+                                        modifier = Modifier.weight(1f),
+                                        onClick = {
+                                            displayNum = updateScreen(displayNum, i.toString())
+                                        }
+                                    )
+                                }
+                                CalcButton(
+                                    sym = "+",
+                                    modifier = Modifier.weight(1f),
+                                    onClick = { displayNum = updateScreen(displayNum, "+") }
+                                )
+                            }
+                            //Third Row --> 4 5 6 -
+                            Row() {
+                                for (i in 4..6) {
+                                    CalcButton(
+                                        sym = i.toString(),
+                                        modifier = Modifier.weight(1f),
+                                        onClick = {
+                                            displayNum = updateScreen(displayNum, i.toString())
+                                        }
+                                    )
+                                }
+                                CalcButton(
+                                    sym = "-",
+                                    modifier = Modifier.weight(1f),
+                                    onClick = { displayNum = updateScreen(displayNum, "-") }
+                                )
+                            }
+                            //Fourth Row --> 7 8 9 *
+                            Row() {
+                                for (i in 7..9) {
+                                    CalcButton(
+                                        sym = i.toString(),
+                                        modifier = Modifier.weight(1f),
+                                        onClick = {
+                                            displayNum = updateScreen(displayNum, i.toString())
+                                        }
+                                    )
+                                }
+                                CalcButton(
+                                    sym = "*",
+                                    modifier = Modifier.weight(1f),
+                                    onClick = { displayNum = updateScreen(displayNum, "*") }
+                                )
+                            }
+                            //Fifth Row --> 0 . = /
+                            Row()
+                            {
+                                CalcButton(
+                                    sym = ".",
+                                    modifier = Modifier.weight(1f),
+                                    onClick = { displayNum = updateScreen(displayNum, ".") }
+                                )
+                                CalcButton(
+                                    sym = "0",
+                                    modifier = Modifier.weight(1f),
+                                    onClick = { displayNum = updateScreen(displayNum, "0") }
+                                )
+                                CalcButton(
+                                    sym = "=",
+                                    modifier = Modifier.weight(1f),
+                                    onClick = {
+                                        displayNum = calculateExpression(
+                                            expression = displayNum,
+                                            navController = navController
+                                        )
+                                    }
+                                )
+                                CalcButton(
+                                    sym = "/",
+                                    modifier = Modifier.weight(1f),
+                                    onClick = { displayNum = updateScreen(displayNum, "/") }
+                                )
+
+                            }
+
 
                         }
-
-
                     }
                 }
             }
         }
+
     }
 
-}
-
-@Preview(device = "spec:width=411dp,height=891dp", showBackground = true)
-@Composable
-fun BasicCalculatorPreview(){
-    //BasicCalculator()
+    @Preview(device = "spec:width=411dp,height=891dp", showBackground = true)
+    @Composable
+    fun BasicCalculatorPreview() {
+        //BasicCalculator()
+    }
 }
 
 
