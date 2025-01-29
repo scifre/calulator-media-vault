@@ -144,10 +144,19 @@ fun HiddenPageGalleryView(navController: NavController?, permissionLauncher: Act
     val activity = context as? Activity
     fun createVaultDirectory(context: Context): File {
         val vaultDirectory = File(context.filesDir, "vault_gallery")
+
         if (!vaultDirectory.exists()) {
             vaultDirectory.mkdirs()
         }
         return vaultDirectory
+    }
+
+    fun createJsonFile(context: Context): File{
+        val jsonFile = File(context.filesDir, "location_db/location.json")
+        if (!jsonFile.exists()){
+            jsonFile.mkdirs()
+        }
+        return jsonFile
     }
     fun isValidUri(uri: Uri): Boolean {
         return try {
@@ -162,15 +171,6 @@ fun HiddenPageGalleryView(navController: NavController?, permissionLauncher: Act
     val images = remember{ mutableStateListOf<Uri>() }
     @Composable
     fun ImageThumbnail(image: Uri){
-       /* Box(
-            modifier = Modifier
-                .padding(9.dp)
-                .height(20.dp)
-                .aspectRatio(1f)
-                .clickable {
-                    navController?.navigate("image_viewer/${Uri.encode(image.toString())}")
-                }
-        )*/
         Image(
             painter = rememberAsyncImagePainter(image),
             contentDescription = "Image Thumbnail",
@@ -194,6 +194,7 @@ fun HiddenPageGalleryView(navController: NavController?, permissionLauncher: Act
 
     fun moveImageToVault(context: Context, uris: List<Uri>) {
         uris.forEach { uri ->
+            println(uri.toString())
             if (!isValidUri(uri)) {
                 Log.e("Error", "Invalid URI")
                 return
@@ -201,7 +202,6 @@ fun HiddenPageGalleryView(navController: NavController?, permissionLauncher: Act
             try {
                 // Get the vault directory
                 val vaultDirectory = createVaultDirectory(context)
-
                 // Extract the file name from the URI (fallback to timestamp if null)
                 val fileName = uri.lastPathSegment?.substringAfterLast("/")
                     ?: "image_${System.currentTimeMillis()}.jpg"
@@ -216,28 +216,22 @@ fun HiddenPageGalleryView(navController: NavController?, permissionLauncher: Act
                 val outputStream = FileOutputStream(destinationFile)
                 inputStream?.copyTo(outputStream)
 
+
                 // Close the streams
                 inputStream?.close()
                 outputStream.close()
 
 
-
                 try {
-                    val fileId = ContentUris.parseId(uri)
+                    val     fileId = ContentUris.parseId(uri)
                     val selection = "${MediaStore.Images.Media._ID} = ?"
                     val selectionArgs = arrayOf(fileId.toString())
 
-                    val rowsDeleted = context.contentResolver.delete(
+                    context.contentResolver.delete(
                         MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
                         selection,
                         selectionArgs
                     )
-
-                    if (rowsDeleted > 0) {
-                        // File deleted successfully
-                    } else {
-                        // File could not be deleted
-                    }
                 } catch (e: IllegalArgumentException) {
                     // Handle the error (e.g., invalid Uri)
                     e.printStackTrace()
@@ -249,7 +243,7 @@ fun HiddenPageGalleryView(navController: NavController?, permissionLauncher: Act
 
                 println("Image moved to vault: ${destinationFile.absolutePath}")
             } catch (e: Exception) {
-                println("Error")
+                println("Error11")
                 e.printStackTrace()
             }
         }
