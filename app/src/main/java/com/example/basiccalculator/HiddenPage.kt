@@ -2,7 +2,6 @@ package com.example.basiccalculator
 
 //import androidx.compose.ui.tooling.data.EmptyGroup.data
 import android.app.Activity
-import android.app.AlertDialog
 import android.content.ContentUris
 import android.content.Context
 import android.content.Intent
@@ -29,17 +28,22 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -136,12 +140,15 @@ import java.io.InputStream
 
 
 
-
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
+@OptIn(ExperimentalMaterial3Api::class)
+
 fun HiddenPageGalleryView(navController: NavController?, permissionLauncher: ActivityResultLauncher<Array<String>>?){
     val context = LocalContext.current
     val activity = context as? Activity
+    var launchPhotoPicker by remember { mutableStateOf(false) }
+
+
     fun createVaultDirectory(context: Context): File {
         val vaultDirectory = File(context.filesDir, "vault_gallery")
 
@@ -151,13 +158,7 @@ fun HiddenPageGalleryView(navController: NavController?, permissionLauncher: Act
         return vaultDirectory
     }
 
-    fun createJsonFile(context: Context): File{
-        val jsonFile = File(context.filesDir, "location_db/location.json")
-        if (!jsonFile.exists()){
-            jsonFile.mkdirs()
-        }
-        return jsonFile
-    }
+
     fun isValidUri(uri: Uri): Boolean {
         return try {
             val cursor = context.contentResolver.query(uri, null, null, null, null)
@@ -176,12 +177,13 @@ fun HiddenPageGalleryView(navController: NavController?, permissionLauncher: Act
             contentDescription = "Image Thumbnail",
             modifier = Modifier
                 .aspectRatio(1f)
-                .clickable{
+                .clickable {
                     navController?.navigate("image_viewer/${Uri.encode(image.toString())}")
                 },
             contentScale = ContentScale.Crop
         )
     }
+
 
     fun loadImagesDynamically() {
         val imagesFiles = File(context.filesDir, "vault_gallery").listFiles() { file -> file.isFile }
@@ -266,12 +268,54 @@ fun HiddenPageGalleryView(navController: NavController?, permissionLauncher: Act
         }
     }
 
-    fun launchPhotoPicker(){
+    @Composable
+    fun AlertDialogBox(alertText: String, alertTitle: String, alertState: Boolean, onDismissRequest: () -> Unit, confirmButtonAction: ()-> Unit){
+        if(alertState){
+            AlertDialog(
+                onDismissRequest = {onDismissRequest()},
+                confirmButton = {
+                    TextButton(
+                        onClick = {confirmButtonAction()}
+                    ) {
+                        Text(text = "OK")
+                    }
+                },
+                dismissButton = {
+                    TextButton(
+                        onClick = {onDismissRequest()}
+                    ) {
+                        Text(text = "Cancel")
+                    }
+                },
+                title = { Text(alertTitle) },
+                text = { Text(alertText) },
+            )
+        }
+    }
+
+    @Composable
+    fun LaunchPhotoPicker(){
+        println("LPP Launched")
+        val storagePermissionAlertDialogState = remember { mutableStateOf(true) }
         if(!Environment.isExternalStorageManager()){
             val intent = Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION).apply {
                 data  = Uri.parse("package:${activity?.packageName}")
             }
-            AlertDialog.Builder(context)
+
+            AlertDialogBox(
+                alertText = "This App needs permission to access your files, this will be used to move your files in and out of the vault. Grant it in the next step",
+                alertTitle = "Storage Permission required",
+                alertState = storagePermissionAlertDialogState.value,
+                onDismissRequest = {
+                    storagePermissionAlertDialogState.value = false
+                    launchPhotoPicker = false
+                },
+                confirmButtonAction = {
+                    storagePermissionAlertDialogState.value = false
+                    launchPhotoPicker = false
+                    activity?.startActivity(intent)}
+            )
+            /*AlertDialog.Builder(context)
                 .setTitle("Storage Permission required")
                 .setMessage("This App needs permission to access your files, this will be used to move your files in and out of the vault. Grant it in the next step")
                 .setPositiveButton("OK"){ dialog, _ ->
@@ -281,10 +325,12 @@ fun HiddenPageGalleryView(navController: NavController?, permissionLauncher: Act
                 .setNeutralButton("Cancel"){dialog, _ ->
                     dialog.dismiss()
                 }
-                .show()
+                .show()*/
             //activity?.startActivity(intent)
 
         } else{
+            storagePermissionAlertDialogState.value = false
+            launchPhotoPicker = false
             pickMediaLauncher.launch(
                 PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageAndVideo)
             )
@@ -292,10 +338,6 @@ fun HiddenPageGalleryView(navController: NavController?, permissionLauncher: Act
     }
 
 
-
-
-    //val bottomSheetState = rememberModalBottomSheetState()
-    //var showBottomSheet by remember{ mutableStateOf(false) }
     Scaffold(
         topBar = {
             TopAppBar(
@@ -310,7 +352,8 @@ fun HiddenPageGalleryView(navController: NavController?, permissionLauncher: Act
                 actions = {
                     IconButton(
                         onClick ={
-                            launchPhotoPicker()
+                            println("Add buttoin pressed")
+                            launchPhotoPicker = true
                         }
                     ) {
                         Icon(
@@ -338,6 +381,11 @@ fun HiddenPageGalleryView(navController: NavController?, permissionLauncher: Act
 
         }
 
+    }
+    if(launchPhotoPicker){
+        println("LaunchPhotoPicker set to true")
+        LaunchPhotoPicker()
+        //launchPhotoPicker = false
     }
 
 }
