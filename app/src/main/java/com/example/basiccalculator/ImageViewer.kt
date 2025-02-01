@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -19,6 +20,10 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -34,8 +39,12 @@ import java.io.File
 @Composable
 //remove null
 fun ImageViewer(navController: NavController? = null, imageUri: Uri? = null) {
+    var deleteAlertDialogState by remember { mutableStateOf(false) }
+    var unhideAlertDialogState by remember { mutableStateOf(false) }
     println(imageUri.toString())
     val context = LocalContext.current
+
+
     fun moveImageToExtStorage(imageUri: Uri?){
         val fileName = imageUri?.lastPathSegment?.substringAfterLast("/")
             ?: "image_${System.currentTimeMillis()}.jpg"
@@ -71,6 +80,33 @@ fun ImageViewer(navController: NavController? = null, imageUri: Uri? = null) {
             }
         }
     }
+    if(unhideAlertDialogState){
+        AlertDialogBox(
+            alertText = "Are you sure you want to unhide this image? This operation will the image back to the gallery.",
+            alertTitle = "Unhide this Image?",
+            onDismissRequest = {unhideAlertDialogState = false},
+            confirmButtonAction = {
+                unhideAlertDialogState = false
+                moveImageToExtStorage(imageUri)
+                navController?.popBackStack()
+            },
+            alertIcon = Icons.Filled.Lock
+
+        )
+    }
+    if(deleteAlertDialogState){
+        AlertDialogBox(
+            alertText = "Are you sure you want to delete this image? This operation cannot be undone.",
+            alertTitle = "Delete this Image?",
+            onDismissRequest = {deleteAlertDialogState = false},
+            confirmButtonAction = {
+                deleteAlertDialogState = false
+                imageUri?.path?.let { File(it) }?.delete()
+                navController?.popBackStack()
+            },
+            alertIcon = Icons.Filled.Delete
+        )
+    }
 
     Scaffold(
         topBar = {
@@ -87,22 +123,22 @@ fun ImageViewer(navController: NavController? = null, imageUri: Uri? = null) {
                 actions = {
                     IconButton(
                         onClick = {
-                            moveImageToExtStorage(imageUri)
-                            navController?.popBackStack()
+                            unhideAlertDialogState = true
+                            //moveImageToExtStorage(imageUri)
+                            //navController?.popBackStack()
 
                         }
                     ) {
                         Icon(
                             imageVector = Icons.Filled.Clear,
-                            contentDescription = "Unhided the image",
+                            contentDescription = "Un-hide the image",
                             modifier = Modifier.size(40.dp)
                         )
                     }
 
                     IconButton(
                         onClick = {
-                            imageUri?.path?.let { File(it) }?.delete()
-                            navController?.popBackStack()
+                            deleteAlertDialogState = true
                         }
                     ) {
                         Icon(

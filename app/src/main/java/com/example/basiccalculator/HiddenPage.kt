@@ -1,6 +1,6 @@
 package com.example.basiccalculator
 
-//import androidx.compose.ui.tooling.data.EmptyGroup.data
+
 import android.app.Activity
 import android.content.ContentUris
 import android.content.Context
@@ -19,6 +19,7 @@ import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
@@ -45,7 +46,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
@@ -96,7 +99,7 @@ import java.io.InputStream
         permissionLauncher?.launch(permissionsList.toTypedArray())
     }
 
-     @OptIn(ExperimentalMaterial3Api::class)
+
      fun openBottomDrawer(context: Context, permissionLauncher: ActivityResultLauncher<Array<String>>?): Boolean {
         val permissionsList = mutableListOf<String>()
         Log.d("My Tag", "Debug message 1")
@@ -135,7 +138,59 @@ import java.io.InputStream
 
     }
 
+@Composable
+fun AlertDialogBox(
+    alertText: String,
+    alertTitle: String,
+    onDismissRequest: () -> Unit,
+    confirmButtonAction: () -> Unit,
+    alertIcon: ImageVector? = null
+){
+    AlertDialog(
+        onDismissRequest = {onDismissRequest()},
+        confirmButton = {
+            TextButton(
+                onClick = {confirmButtonAction()}
+            ) {
+                Text(
+                    text = "OK",
+                    fontSize = 18.sp
+                )
+            }
+        },
+        dismissButton = {
+            TextButton(
+                onClick = {onDismissRequest()}
+            ) {
+                Text(
+                    text = "Cancel",
+                    fontSize = 18.sp
+                )
+            }
+        },
+        title = {
+            Text(
+                text = alertTitle,
+                fontSize = 25.sp,
+            )
+        },
+        text = {
+            Text(
+                text = alertText,
+                fontSize = 18.sp
+            )
+        },
+        icon = {
+            if (alertIcon != null) {
+                Icon(
+                    imageVector = alertIcon,
+                    contentDescription = "Alert Icon"
+                )
+            }
+        }
+    )
 
+}
 
 
 
@@ -177,6 +232,15 @@ fun HiddenPageGalleryView(navController: NavController?, permissionLauncher: Act
             contentDescription = "Image Thumbnail",
             modifier = Modifier
                 .aspectRatio(1f)
+                .padding(0.dp)
+                .border(
+                    width = 1.dp,
+                    color = Color.Black
+                )
+                .shadow(
+                    elevation = 8.dp,
+                    spotColor = Color.Black
+                )
                 .clickable {
                     navController?.navigate("image_viewer/${Uri.encode(image.toString())}")
                 },
@@ -268,50 +332,22 @@ fun HiddenPageGalleryView(navController: NavController?, permissionLauncher: Act
         }
     }
 
-    @Composable
-    fun AlertDialogBox(alertText: String, alertTitle: String, alertState: Boolean, onDismissRequest: () -> Unit, confirmButtonAction: ()-> Unit){
-        if(alertState){
-            AlertDialog(
-                onDismissRequest = {onDismissRequest()},
-                confirmButton = {
-                    TextButton(
-                        onClick = {confirmButtonAction()}
-                    ) {
-                        Text(text = "OK")
-                    }
-                },
-                dismissButton = {
-                    TextButton(
-                        onClick = {onDismissRequest()}
-                    ) {
-                        Text(text = "Cancel")
-                    }
-                },
-                title = { Text(alertTitle) },
-                text = { Text(alertText) },
-            )
-        }
-    }
 
     @Composable
     fun LaunchPhotoPicker(){
         println("LPP Launched")
-        val storagePermissionAlertDialogState = remember { mutableStateOf(true) }
         if(!Environment.isExternalStorageManager()){
             val intent = Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION).apply {
-                data  = Uri.parse("package:${activity?.packageName}")
+                data = Uri.parse("package:${activity?.packageName}")
             }
 
             AlertDialogBox(
                 alertText = "This App needs permission to access your files, this will be used to move your files in and out of the vault. Grant it in the next step",
                 alertTitle = "Storage Permission required",
-                alertState = storagePermissionAlertDialogState.value,
                 onDismissRequest = {
-                    storagePermissionAlertDialogState.value = false
                     launchPhotoPicker = false
                 },
                 confirmButtonAction = {
-                    storagePermissionAlertDialogState.value = false
                     launchPhotoPicker = false
                     activity?.startActivity(intent)}
             )
@@ -329,7 +365,6 @@ fun HiddenPageGalleryView(navController: NavController?, permissionLauncher: Act
             //activity?.startActivity(intent)
 
         } else{
-            storagePermissionAlertDialogState.value = false
             launchPhotoPicker = false
             pickMediaLauncher.launch(
                 PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageAndVideo)
