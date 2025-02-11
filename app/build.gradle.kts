@@ -71,6 +71,7 @@ dependencies {
     debugImplementation(libs.androidx.ui.test.manifest)
     // Jetpack Compose integration
     implementation(libs.androidx.navigation.compose)
+    implementation(libs.androidx.datastore.preferences)
 
     // Views/Fragments integration
     implementation(libs.androidx.navigation.fragment)

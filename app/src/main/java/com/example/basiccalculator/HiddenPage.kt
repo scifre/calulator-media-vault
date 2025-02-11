@@ -5,19 +5,15 @@ import android.app.Activity
 import android.content.ContentUris
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.net.Uri
-import android.os.Build
 import android.os.Environment
 import android.provider.MediaStore
 import android.provider.Settings
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -54,89 +50,12 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import java.io.File
 import java.io.FileOutputStream
 import java.io.InputStream
 
-
-//class HiddenPage: ComponentActivity() {
-
-    private fun checkWriteExternalStoragePermission(context: Context): Boolean {
-        return ContextCompat.checkSelfPermission(
-            context,
-            android.Manifest.permission.WRITE_EXTERNAL_STORAGE
-        ) == PackageManager.PERMISSION_GRANTED
-    }
-
-    private fun checkReadExternalStoragePermission(context: Context): Boolean {
-        return ContextCompat.checkSelfPermission(
-            context,
-            android.Manifest.permission.READ_EXTERNAL_STORAGE
-        ) == PackageManager.PERMISSION_GRANTED
-    }
-
-    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
-    fun checkReadMediaImagesPermission(context: Context): Boolean {
-        return ContextCompat.checkSelfPermission(
-            context,
-            android.Manifest.permission.READ_MEDIA_IMAGES
-        ) == PackageManager.PERMISSION_GRANTED
-    }
-
-    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
-    fun checkReadMediaVideoPermission(context: Context): Boolean {
-        return ContextCompat.checkSelfPermission(
-            context,
-            android.Manifest.permission.READ_MEDIA_VIDEO
-        ) == PackageManager.PERMISSION_GRANTED
-    }
-
-    private fun requestPermission(context: Context, permissionsList: List<String>, permissionLauncher: ActivityResultLauncher<Array<String>>?) {
-
-        permissionLauncher?.launch(permissionsList.toTypedArray())
-    }
-
-
-     fun openBottomDrawer(context: Context, permissionLauncher: ActivityResultLauncher<Array<String>>?): Boolean {
-        val permissionsList = mutableListOf<String>()
-        Log.d("My Tag", "Debug message 1")
-         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            Log.d("My Tag", "Android 13 and above")
-            if (!checkReadMediaImagesPermission(context)) {
-                permissionsList.add(android.Manifest.permission.READ_MEDIA_IMAGES)
-            }
-            if (!checkReadMediaVideoPermission(context)) {
-                permissionsList.add(android.Manifest.permission.READ_MEDIA_VIDEO)
-            }
-
-        } else {
-            Log.d("My Tag", "Android 12 and below")
-            if (!checkReadExternalStoragePermission(context)) {
-                Log.d("My tag", "read not given")
-                permissionsList.add(android.Manifest.permission.READ_EXTERNAL_STORAGE)
-            }
-            if (!checkWriteExternalStoragePermission(context)) {
-                Log.d("My Tag", "write not given")
-                permissionsList.add(android.Manifest.permission.MANAGE_EXTERNAL_STORAGE)
-            }
-
-        }
-        if (permissionsList.isNotEmpty()) {
-            Log.d("My Tag", "Permission list not empty")
-            requestPermission(context, permissionsList, permissionLauncher)
-            return false
-        }
-        else{
-            Log.d("My Tag", "Permission list empty")
-            Toast.makeText(context, "Permission Granted11", Toast.LENGTH_SHORT).show()
-            return true
-        }
-
-
-    }
 
 @Composable
 fun AlertDialogBox(
@@ -198,7 +117,7 @@ fun AlertDialogBox(
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
 
-fun HiddenPageGalleryView(navController: NavController?, permissionLauncher: ActivityResultLauncher<Array<String>>?){
+fun HiddenPageGalleryView(navController: NavController?){
     val context = LocalContext.current
     val activity = context as? Activity
     var launchPhotoPicker by remember { mutableStateOf(false) }
@@ -250,10 +169,8 @@ fun HiddenPageGalleryView(navController: NavController?, permissionLauncher: Act
 
 
     fun loadImagesDynamically() {
-        val imagesFiles = File(context.filesDir, "vault_gallery").listFiles() { file -> file.isFile }
-            ?.map { file ->
-                Uri.fromFile(file)
-            } ?: emptyList<Uri>()
+        val imagesFiles = File(context.filesDir, "vault_gallery").listFiles { file -> file.isFile }
+            ?.map(Uri::fromFile) ?: emptyList<Uri>()
         images.clear()
         images.addAll(imagesFiles)
     }
@@ -315,7 +232,7 @@ fun HiddenPageGalleryView(navController: NavController?, permissionLauncher: Act
         }
     }
 
-    LaunchedEffect(Unit) {
+        LaunchedEffect(Unit) {
         loadImagesDynamically()
     }
 
@@ -351,18 +268,6 @@ fun HiddenPageGalleryView(navController: NavController?, permissionLauncher: Act
                     launchPhotoPicker = false
                     activity?.startActivity(intent)}
             )
-            /*AlertDialog.Builder(context)
-                .setTitle("Storage Permission required")
-                .setMessage("This App needs permission to access your files, this will be used to move your files in and out of the vault. Grant it in the next step")
-                .setPositiveButton("OK"){ dialog, _ ->
-                    dialog.dismiss()
-                    activity?.startActivity(intent)
-                }
-                .setNeutralButton("Cancel"){dialog, _ ->
-                    dialog.dismiss()
-                }
-                .show()*/
-            //activity?.startActivity(intent)
 
         } else{
             launchPhotoPicker = false
@@ -387,7 +292,7 @@ fun HiddenPageGalleryView(navController: NavController?, permissionLauncher: Act
                 actions = {
                     IconButton(
                         onClick ={
-                            println("Add buttoin pressed")
+                            println("Add button pressed")
                             launchPhotoPicker = true
                         }
                     ) {
@@ -402,7 +307,7 @@ fun HiddenPageGalleryView(navController: NavController?, permissionLauncher: Act
         }
     ) {paddingValues->
         LazyVerticalGrid(
-            columns = GridCells.Fixed(3),
+            columns = GridCells.Fixed(4),
             modifier = Modifier
                 .padding(paddingValues)
                 .fillMaxSize()
@@ -428,5 +333,5 @@ fun HiddenPageGalleryView(navController: NavController?, permissionLauncher: Act
 @Preview(device = "spec:width=411dp,height=891dp", showBackground = true)
 @Composable
 fun HiddenPageGalleryViewPreview(){
-    HiddenPageGalleryView(null, null)
+    HiddenPageGalleryView(null)
 }

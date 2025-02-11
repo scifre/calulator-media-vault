@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -38,7 +37,8 @@ import java.io.File
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 //remove null
-fun ImageViewer(navController: NavController? = null, imageUri: Uri? = null) {
+fun ImageViewer(navController: NavController? = null, encodedUri: String? = null) {
+    val imageUri = encodedUri.let { Uri.parse(it) }
     var deleteAlertDialogState by remember { mutableStateOf(false) }
     var unhideAlertDialogState by remember { mutableStateOf(false) }
     println(imageUri.toString())
@@ -124,13 +124,10 @@ fun ImageViewer(navController: NavController? = null, imageUri: Uri? = null) {
                     IconButton(
                         onClick = {
                             unhideAlertDialogState = true
-                            //moveImageToExtStorage(imageUri)
-                            //navController?.popBackStack()
-
                         }
                     ) {
                         Icon(
-                            imageVector = Icons.Filled.Clear,
+                            imageVector = Icons.Filled.Lock,
                             contentDescription = "Un-hide the image",
                             modifier = Modifier.size(40.dp)
                         )
