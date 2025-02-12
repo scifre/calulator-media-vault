@@ -2,7 +2,6 @@ package com.example.basiccalculator
 import android.annotation.SuppressLint
 import android.content.Context
 import androidx.navigation.NavController
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.first
 import net.objecthunter.exp4j.ExpressionBuilder
 import java.security.MessageDigest
@@ -17,10 +16,7 @@ fun updateScreen(curInt: String, newInt: String, clear: Boolean = false): String
 
 
 @SuppressLint("DefaultLocale")
-fun calculateExpression(expression: String, navController: NavController?): String {
-    if (expression == "9026") {
-        navController?.navigate("hidden")
-    }
+fun calculateExpression(expression: String): String {
     val exp = ExpressionBuilder(expression).build().evaluate()
 
     return if (exp % 1 == 0.0) String.format("%.0f", exp)
@@ -58,7 +54,7 @@ fun sha256(input:String):String{
 }
 
 
-suspend fun navigateToVault(password: String, navController: NavController, scope: CoroutineScope, context: Context){
+suspend fun navigateToVault(password: String, navController: NavController, context: Context){
     val enteredPasswordHash = sha256(password)
     val savedPasswordHash = Preferences.readPassword(context).first()
 

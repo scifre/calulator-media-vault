@@ -5,7 +5,6 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.activity.result.ActivityResultLauncher
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -56,6 +55,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -66,15 +66,11 @@ import kotlinx.coroutines.launch
 
 
 class MainActivity : ComponentActivity() {
-    @OptIn(ExperimentalMaterial3Api::class)
-    private lateinit var permissionLauncher: ActivityResultLauncher<Array<String>>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         //setting up permissionLauncher which is needs to be setup in OnCreate
 
-
-        //val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
         enableEdgeToEdge()
         setContent {
 
@@ -88,9 +84,11 @@ class MainActivity : ComponentActivity() {
 
             NavHost(
                 navController = navController,
-                startDestination = if(isPasswordSet == true){"main"}
-                                    else if (isPasswordSet == false) {"set_password"}
-                                    else{"app_opener"}
+                startDestination = when(isPasswordSet){
+                    true -> "main"
+                    false -> "set_password"
+                    else -> "app_opener"
+                }
             ) {
                 composable("main") { BasicCalculator(navController) }
                 composable("hidden") {HiddenPageGalleryView(navController = navController)}
@@ -216,10 +214,11 @@ class MainActivity : ComponentActivity() {
                             Column(modifier = Modifier.wrapContentSize()) {
                                 CalcScreen(num = displayNum, modifier = Modifier.weight(1f))
                                 //First Row --> C % <-
-                                Row() {
+                                Row {
                                     CalcButton(
                                         sym = "C",
-                                        modifier = Modifier.weight(1f),
+                                        modifier = Modifier
+                                            .weight(1f),
                                         onClick = {
                                             displayNum = updateScreen(displayNum, "", true)
                                         }
@@ -242,7 +241,7 @@ class MainActivity : ComponentActivity() {
                                         ),
                                         border = BorderStroke(width = 0.5.dp, color = Color.White)
                                     ) {
-                                        Box() {
+                                        Box {
                                             Icon(
                                                 imageVector = ImageVector.vectorResource(id = R.drawable.backspace_vec),
                                                 contentDescription = "Backspace_icon",
@@ -264,7 +263,7 @@ class MainActivity : ComponentActivity() {
                                 }
 
                                 //Second Row --> 1 2 3 +
-                                Row() {
+                                Row {
                                     for (i in 1..3) {
                                         CalcButton(
                                             sym = i.toString(),
@@ -282,7 +281,7 @@ class MainActivity : ComponentActivity() {
                                 }
 
                                 //Third Row --> 4 5 6 -
-                                Row() {
+                                Row {
                                     for (i in 4..6) {
                                         CalcButton(
                                             sym = i.toString(),
@@ -300,7 +299,7 @@ class MainActivity : ComponentActivity() {
                                 }
 
                                 //Fourth Row --> 7 8 9 *
-                                Row() {
+                                Row {
                                     for (i in 7..9) {
                                         CalcButton(
                                             sym = i.toString(),
@@ -326,13 +325,10 @@ class MainActivity : ComponentActivity() {
                                         .combinedClickable(
                                             onClick = {displayNum = updateScreen(displayNum, ".")},
                                             onLongClick = {
-                                                println("long press detected")
                                                 scope.launch{
-                                                    println("scoped")
                                                     navigateToVault(
                                                         password = displayNum,
                                                         navController = navController,
-                                                        scope = scope,
                                                         context = context
                                                     )
                                                 }
@@ -367,8 +363,7 @@ class MainActivity : ComponentActivity() {
                                         modifier = Modifier.weight(1f),
                                         onClick = {
                                             displayNum = calculateExpression(
-                                                expression = displayNum,
-                                                navController = navController
+                                                expression = displayNum
                                             )
                                         }
                                     )
@@ -394,7 +389,7 @@ class MainActivity : ComponentActivity() {
 
 
 
-
+    @Preview(showBackground = true)
     @Composable
     fun SetPasswordScreen(navController: NavController?=null){
         var password by remember { mutableStateOf("") }
@@ -471,7 +466,18 @@ class MainActivity : ComponentActivity() {
                 }
 
             )
-            Spacer(modifier = Modifier.size(30.dp))
+            Text(
+                text = if(password.isNotEmpty() && password.length<6){
+                    "PIN should be 6 digits"
+                }
+                else{
+                    ""
+                },
+                modifier = Modifier.padding(top = 5.dp),
+                color = Color.Red,
+                fontSize = 15.sp
+            )
+            //Spacer(modifier = Modifier.size(30.dp))
 
             OutlinedTextField(
                 value = confirmPassword,
