@@ -285,7 +285,7 @@ fun HiddenPageGalleryView(navController: NavController?){
                     Text(
                         text = "Gallery",
                         fontSize = 40.sp,
-                        color = Color.Green
+                        color = Color.White
                     )
                 },
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Magenta),

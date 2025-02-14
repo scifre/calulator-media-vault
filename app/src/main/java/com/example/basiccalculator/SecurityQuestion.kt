@@ -27,15 +27,16 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
-//@Preview(device = "spec:width=411dp,height=891dp", showBackground = true)
+@Preview(device = "spec:width=411dp,height=891dp", showBackground = true)
 @Composable
-fun SetSecurityQuestion(navController: NavController, passwordHash: String){
+fun SetSecurityQuestion(navController: NavController? = null, passwordHash: String = "acs"){
     val context = LocalContext.current
     var isSecurityQuestionDropdownExpanded by remember { mutableStateOf(false) }
     var selectedSecurityQuestion by remember { mutableStateOf("") }
@@ -174,6 +175,7 @@ fun SetSecurityQuestion(navController: NavController, passwordHash: String){
                 if(newText.length <=10) securityAnswer = newText.lowercase()
             },
             modifier = Modifier
+                .fillMaxWidth()
                 .onFocusChanged { focusState ->
                     isSecurityAnswerFocused = focusState.isFocused
                 },
@@ -210,7 +212,7 @@ fun SetSecurityQuestion(navController: NavController, passwordHash: String){
             scope.launch() {
                 Preferences.saveSecurityQuestionAndAnswer(context = context, securityQuestion = selectedSecurityQuestion, securityAnswer = securityAnswer)
                 Preferences.savePassword(context = context, password = passwordHash)
-                navController.navigate("main")
+                navController?.navigate("main")
             }
 
         }

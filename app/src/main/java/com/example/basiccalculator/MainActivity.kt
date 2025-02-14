@@ -17,10 +17,12 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
@@ -30,6 +32,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -52,6 +55,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -410,30 +414,30 @@ class MainActivity : ComponentActivity() {
         Column (
             modifier = Modifier
                 .fillMaxSize()
-                .padding(all = 10.dp)
+                .padding(all = 16.dp)
                 .clickable(
                     interactionSource = remember { MutableInteractionSource() },
                     indication = null
                 ){
                     focusManager.clearFocus()
-                }
+                },
         ){
-
             Spacer(modifier = Modifier.size(50.dp))
             Text(
-                text = "Vault Setup",
-                fontSize = 60.sp
-            )
-            Spacer(modifier = Modifier.size(50.dp))
-            Text(
-                text = "Vault PIN",
-                fontSize = 40.sp
+                text = "Setup a Vault PIN",
+                fontSize = 40.sp,
+                color = Color(0xFFE0801F),
+                fontWeight = FontWeight.Bold,
+                fontFamily = poppinsFontFamily
             )
             Spacer(modifier = Modifier.size(30.dp))
-            Text(text = "Hello,\nPlease set your vault PIN here",
-                fontSize = 30.sp,
+            Text(text = "Hello! Set up your vault PIN, that will be used to access it.",
+                fontSize = 18.sp,
                 modifier = Modifier,
-                color = Color.DarkGray
+                color = Color.DarkGray,
+                textAlign = TextAlign.Center,
+                fontFamily = poppinsFontFamily
+
             )
             Spacer(modifier = Modifier.size(50.dp))
             OutlinedTextField(
@@ -446,9 +450,12 @@ class MainActivity : ComponentActivity() {
                 label = {
                     Text(
                         text = "Enter PIN",
-                        color = Color.DarkGray,
+                        color = if(isPasswordFocused){Color(0xFFE0801F)} else Color.DarkGray,
                         fontSize = if(password.isNotEmpty() || isPasswordFocused) 15.sp else 20.sp,
                         modifier = Modifier
+
+
+
                     )
                 },
 
@@ -461,9 +468,16 @@ class MainActivity : ComponentActivity() {
                 ),
                 singleLine = true,
                 placeholder = {Text("Enter 6-digit PIN")},
-                modifier = Modifier.onFocusChanged { focusState ->
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .onFocusChanged { focusState ->
                     isPasswordFocused = focusState.isFocused
-                }
+                    },
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedContainerColor = Color.White,
+                    unfocusedContainerColor = Color(0xFFFBE8CD),
+                    focusedBorderColor = Color(0xFFE0801F)
+                )
 
             )
             Text(
@@ -502,9 +516,16 @@ class MainActivity : ComponentActivity() {
                 ),
                 singleLine = true,
                 placeholder = {Text("Enter 6-digit PIN")},
-                modifier = Modifier.onFocusChanged { focusState ->
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .onFocusChanged { focusState ->
                     isConfirmPasswordFocused = focusState.isFocused
-                }
+                },
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedContainerColor = Color.White,
+                    unfocusedContainerColor = Color(0xFFFBE8CD),
+                    focusedBorderColor = Color(0xFFE0801F),
+                )
             )
 
             Text(
@@ -525,11 +546,21 @@ class MainActivity : ComponentActivity() {
                 isSetPasswordButtonClickable = false
             }
 
-            Spacer(modifier = Modifier.size(50.dp))
+            //Spacer(modifier = Modifier.size(50.dp))
             Button(
                 onClick = {onClickSetPassword(password, confirmPassword)},
                 enabled = isSetPasswordButtonClickable,
                 modifier = Modifier
+                    .height(50.dp)
+                    .fillMaxWidth(),
+
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color(0xFFE0801F)
+                ),
+                shape = RoundedCornerShape(5.dp),
+                elevation = ButtonDefaults.buttonElevation(
+                    defaultElevation = 10.dp
+                )
             ) {
                 Text(
                     text = "Set Password",
