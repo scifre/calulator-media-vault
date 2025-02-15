@@ -1,5 +1,6 @@
 package com.example.basiccalculator
 
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -13,3 +14,6 @@ val poppinsFontFamily = FontFamily(
 
 
 )
+
+val lightOrange = Color(0xFFFBE8CD)
+val darkOrange = Color(0xFFE0801F)

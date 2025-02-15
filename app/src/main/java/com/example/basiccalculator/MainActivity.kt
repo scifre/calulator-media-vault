@@ -24,18 +24,17 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -119,19 +118,25 @@ class MainActivity : ComponentActivity() {
     fun CalcScreen(num: String, modifier: Modifier = Modifier) {
 
         Box(
-            modifier = modifier.fillMaxWidth().background(color = Color(0xFFECCBF0)),
+            modifier = modifier
+                .fillMaxWidth()
+                .background(color = Color.White),
 
             ) {
             Text(
                 text = num,
-                modifier = Modifier.wrapContentSize().align(Alignment.BottomEnd),
-                color = Color.Gray,
+                fontFamily = poppinsFontFamily,
+                modifier = Modifier
+                    .wrapContentSize()
+                    .align(Alignment.BottomEnd),
+                color = Color.DarkGray,
                 fontSize = 100.sp,
                 style = TextStyle(
                     shadow = Shadow(
                         color = Color.Black,
                         blurRadius = 2f,
                         offset = Offset(3f, 3f),
+
                     )
                 ),
 
@@ -147,19 +152,21 @@ class MainActivity : ComponentActivity() {
 
     @Composable
     fun CalcButton(sym: String, onClick: () -> Unit, modifier: Modifier = Modifier) {
-        Button(
+        TextButton(
             onClick = { onClick() },
             modifier = modifier
                 //.padding(2.dp)
                 .size(100.dp),
             shape = RectangleShape,
-            colors = ButtonDefaults.buttonColors(containerColor = Color.White),
-            border = BorderStroke(width = 0.5.dp, color = Color.White)
+            colors = ButtonDefaults.buttonColors(containerColor = lightOrange),
+            //border = BorderStroke(width = 0.5.dp, color = Color.White),
+
         ) {
             Text(
                 text = sym,
                 fontSize = 55.sp,
-                color = Color.Gray,
+                fontFamily = poppinsFontFamily,
+                color = darkOrange,
                 style = TextStyle(
                     shadow = Shadow(
                         color = Color.Black,
@@ -173,9 +180,9 @@ class MainActivity : ComponentActivity() {
 
 
     @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
-
+    //@Preview(showBackground = true)
     @Composable
-    fun BasicCalculator(navController: NavController) {
+    fun BasicCalculator(navController: NavController? = null) {
         val context = LocalContext.current
         var displayNum: String by remember { mutableStateOf("0") }
 
@@ -189,23 +196,21 @@ class MainActivity : ComponentActivity() {
                     TopAppBar(
                         title = {
                             Text(
-                                text = "Basic Calculator",
+                                text = "Calculator",
                                 fontSize = 40.sp,
-                                color = Color.Green
+                                color = Color.White,
+                                fontWeight = FontWeight.Bold,
+                                fontFamily = poppinsFontFamily
                             )
 
                         },
-                        navigationIcon = {
-                            IconButton(
-                                onClick = {}
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Filled.Menu,
-                                    contentDescription = "Menu",
-                                    modifier = Modifier.size(40.dp)
-                                )
-                            }
-                        }
+                        colors = TopAppBarColors(
+                            containerColor = darkOrange,
+                            scrolledContainerColor = Color.White,
+                            titleContentColor = Color.White,
+                            actionIconContentColor = Color.White,
+                            navigationIconContentColor = Color.White
+                        )
                     )
                 },
 
@@ -240,24 +245,24 @@ class MainActivity : ComponentActivity() {
                                             .weight(1f),
                                         shape = RectangleShape,
                                         colors = ButtonDefaults.buttonColors(
-                                            containerColor = Color.White,
-                                            contentColor = Color.Black
+                                            containerColor = lightOrange,
                                         ),
                                         border = BorderStroke(width = 0.5.dp, color = Color.White)
                                     ) {
-                                        Box {
+                                        Box{
                                             Icon(
                                                 imageVector = ImageVector.vectorResource(id = R.drawable.backspace_vec),
                                                 contentDescription = "Backspace_icon",
                                                 tint = Color.Black,
-                                                modifier = Modifier.size(65.dp)
+                                                modifier = Modifier
+                                                    .size(65.dp)
                                                     .offset(x = 1.dp, y = 1.dp)
 
                                             )
                                             Icon(
                                                 imageVector = ImageVector.vectorResource(id = R.drawable.backspace_vec),
                                                 contentDescription = "Backspace_icon",
-                                                tint = Color.Gray,
+                                                tint = darkOrange,
                                                 modifier = Modifier.size(65.dp)
 
                                             )
@@ -326,15 +331,20 @@ class MainActivity : ComponentActivity() {
                                     Box(modifier = Modifier
                                         .size(100.dp)
                                         .weight(1f)
+                                        .background(color = lightOrange)
                                         .combinedClickable(
-                                            onClick = {displayNum = updateScreen(displayNum, ".")},
+                                            onClick = {
+                                                displayNum = updateScreen(displayNum, ".")
+                                            },
                                             onLongClick = {
-                                                scope.launch{
-                                                    navigateToVault(
-                                                        password = displayNum,
-                                                        navController = navController,
-                                                        context = context
-                                                    )
+                                                scope.launch {
+                                                    if (navController != null) {
+                                                        navigateToVault(
+                                                            password = displayNum,
+                                                            navController = navController,
+                                                            context = context
+                                                        )
+                                                    }
                                                 }
                                             }
                                         ),
@@ -345,7 +355,7 @@ class MainActivity : ComponentActivity() {
                                             Text(
                                                 text = ".",
                                                 fontSize = 55.sp,
-                                                color = Color.Gray,
+                                                color = darkOrange,
                                                 style = TextStyle(
                                                     shadow = Shadow(
                                                         color = Color.Black,
@@ -418,7 +428,7 @@ class MainActivity : ComponentActivity() {
                 .clickable(
                     interactionSource = remember { MutableInteractionSource() },
                     indication = null
-                ){
+                ) {
                     focusManager.clearFocus()
                 },
         ){
@@ -471,7 +481,7 @@ class MainActivity : ComponentActivity() {
                 modifier = Modifier
                     .fillMaxWidth()
                     .onFocusChanged { focusState ->
-                    isPasswordFocused = focusState.isFocused
+                        isPasswordFocused = focusState.isFocused
                     },
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedContainerColor = Color.White,
@@ -519,8 +529,8 @@ class MainActivity : ComponentActivity() {
                 modifier = Modifier
                     .fillMaxWidth()
                     .onFocusChanged { focusState ->
-                    isConfirmPasswordFocused = focusState.isFocused
-                },
+                        isConfirmPasswordFocused = focusState.isFocused
+                    },
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedContainerColor = Color.White,
                     unfocusedContainerColor = Color(0xFFFBE8CD),

@@ -8,12 +8,14 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -27,6 +29,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -65,18 +69,16 @@ fun SetSecurityQuestion(navController: NavController? = null, passwordHash: Stri
                 focusManager.clearFocus()
             }
     ) {
-        Spacer(modifier = Modifier.size((50.dp)))
-        Text(
-            text = "Vault Setup",
-            fontSize = 60.sp
-        )
         Spacer(
             modifier = Modifier
                 .size(50.dp)
         )
         Text(
             text = "Security Question",
-            fontSize = 40.sp
+            fontSize = 40.sp,
+            color = Color(0xFFE0801F),
+            fontFamily = poppinsFontFamily,
+            fontWeight = FontWeight.Bold
         )
         Spacer(
             modifier = Modifier
@@ -84,7 +86,9 @@ fun SetSecurityQuestion(navController: NavController? = null, passwordHash: Stri
         )
         Text(
             text = "Setup a security question so that if you forget your PIN you can reset it.",
-            fontSize = 30.sp,
+            fontSize = 18.sp,
+            fontFamily = poppinsFontFamily,
+            textAlign = TextAlign.Center
 
         )
         Spacer(
@@ -130,7 +134,11 @@ fun SetSecurityQuestion(navController: NavController? = null, passwordHash: Stri
                     .menuAnchor()
                     .onFocusChanged { focusState ->
                         isSecurityQuestionFocused = focusState.isFocused
-                    }
+                    },
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedContainerColor = Color.White,
+                    unfocusedContainerColor = lightOrange
+                )
 
             )
             ExposedDropdownMenu(
@@ -188,6 +196,10 @@ fun SetSecurityQuestion(navController: NavController? = null, passwordHash: Stri
             },
             textStyle = TextStyle(
                 fontSize = 20.sp
+            ),
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedContainerColor = Color.White,
+                unfocusedContainerColor = lightOrange
             )
 
 
@@ -219,7 +231,10 @@ fun SetSecurityQuestion(navController: NavController? = null, passwordHash: Stri
 
         Button(
             onClick = {onSetPINClicked(securityAnswer, selectedSecurityQuestion, passwordHash)},
-            enabled = (isSetPINClickable)
+            enabled = (isSetPINClickable),
+            shape = RoundedCornerShape(6.dp),
+            modifier = Modifier
+                .fillMaxWidth()
 
         ) { Text(
             text = "Set PIN",

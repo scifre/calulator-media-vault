@@ -23,12 +23,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -47,6 +45,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -279,18 +279,47 @@ fun HiddenPageGalleryView(navController: NavController?){
 
 
     Scaffold(
+
+        floatingActionButton = {
+            FloatingActionButton(
+                onClick = {
+                    println("Add button pressed")
+                    launchPhotoPicker = true
+                },
+                containerColor = lightOrange,
+                modifier = Modifier
+                    .size(60.dp)
+            ) {
+                Icon(
+                    imageVector = ImageVector.vectorResource(R.drawable.add_image),
+                    contentDescription = "Add Image",
+                    tint = darkOrange,
+                    modifier = Modifier
+                        .size(50.dp)
+                )
+            }
+        },
         topBar = {
             TopAppBar(
                 title = {
                     Text(
                         text = "Gallery",
                         fontSize = 40.sp,
+                        fontFamily = poppinsFontFamily,
+                        fontWeight = FontWeight.Bold,
                         color = Color.White
                     )
                 },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Magenta),
-                actions = {
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = darkOrange),
+                /*actions = {
                     IconButton(
+                        colors = IconButtonColors(
+                            contentColor = Color.White,
+                            containerColor = darkOrange,
+                            disabledContainerColor = Color.White,
+                            disabledContentColor = Color.White
+                        ),
                         onClick ={
                             println("Add button pressed")
                             launchPhotoPicker = true
@@ -301,8 +330,9 @@ fun HiddenPageGalleryView(navController: NavController?){
                             contentDescription = "Add Image",
                             modifier = Modifier.size(40.dp)
                         )
+
                     }
-                }
+                }*/
             )
         }
     ) {paddingValues->
