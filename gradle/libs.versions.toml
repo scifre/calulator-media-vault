@@ -1,6 +1,8 @@
 [versions]
-agp = "8.8.0"
+accompanistPager = "0.32.0"
+agp = "8.8.1"
 coilCompose = "2.4.0"
+coilVideoVersion = "2.5.0"
 datastorePreferences = "1.1.2"
 exp4j = "0.4.9"
 exp4jVersion = "0.4.8"
@@ -12,19 +14,27 @@ espressoCore = "3.6.1"
 lifecycleRuntimeKtx = "2.8.3"
 activityCompose = "1.9.0"
 composeBom = "2024.04.01"
+media3Exoplayer = "1.5.1"
 navigationCompose = "2.8.2"
 ui = "1.7.2"
 uiGraphics = "1.7.2"
+monitor = "1.7.2"
 
 [libraries]
+accompanist-pager = { module = "com.google.accompanist:accompanist-pager", version.ref = "accompanistPager" }
+accompanist-pager-indicators = { module = "com.google.accompanist:accompanist-pager-indicators", version.ref = "accompanistPager" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastorePreferences" }
+androidx-media3-exoplayer = { module = "androidx.media3:media3-exoplayer", version.ref = "media3Exoplayer" }
+androidx-media3-ui = { module = "androidx.media3:media3-ui", version.ref = "media3Exoplayer" }
 androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
 androidx-navigation-dynamic-features-fragment = { module = "androidx.navigation:navigation-dynamic-features-fragment", version.ref = "navigationCompose" }
 androidx-navigation-fragment = { module = "androidx.navigation:navigation-fragment", version.ref = "navigationCompose" }
 androidx-navigation-testing = { module = "androidx.navigation:navigation-testing", version.ref = "navigationCompose" }
 androidx-navigation-ui = { module = "androidx.navigation:navigation-ui", version.ref = "navigationCompose" }
+coil = { module = "io.coil-kt:coil", version.ref = "coilVideoVersion" }
 coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coilCompose" }
+coil-kt-coil-video = { module = "io.coil-kt:coil-video", version.ref = "coilVideoVersion" }
 exp4j = { module = "net.objecthunter:exp4j", version.ref = "exp4j" }
 exp4j-v048 = { module = "net.objecthunter:exp4j", version.ref = "exp4jVersion" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -42,6 +52,7 @@ androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit
 androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
 ui = { module = "androidx.compose.ui:ui", version.ref = "ui" }
 ui-graphics = { module = "androidx.compose.ui:ui-graphics", version.ref = "uiGraphics" }
+androidx-monitor = { group = "androidx.test", name = "monitor", version.ref = "monitor" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

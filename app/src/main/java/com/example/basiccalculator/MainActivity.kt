@@ -5,7 +5,6 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -106,6 +105,10 @@ class MainActivity : ComponentActivity() {
                         SetSecurityQuestion(navController = navController, passwordHash = passwordHash)
                     }
                 }
+                composable("video_player/{encodedUri}"){backstackEntry ->
+                    val encodedUri = backstackEntry.arguments?.getString("encodedUri")
+                    VideoViewer(navController = navController, encodedUri = encodedUri)
+                }
                 composable("app_opener") { AppOpener() }
 
 
@@ -180,7 +183,7 @@ class MainActivity : ComponentActivity() {
 
 
     @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
-    //@Preview(showBackground = true)
+    @Preview(showBackground = true)
     @Composable
     fun BasicCalculator(navController: NavController? = null) {
         val context = LocalContext.current
@@ -244,10 +247,10 @@ class MainActivity : ComponentActivity() {
                                             .size(100.dp)
                                             .weight(1f),
                                         shape = RectangleShape,
-                                        colors = ButtonDefaults.buttonColors(
-                                            containerColor = lightOrange,
-                                        ),
-                                        border = BorderStroke(width = 0.5.dp, color = Color.White)
+                                        colors = ButtonDefaults
+                                            .buttonColors(
+                                                containerColor = lightOrange,
+                                            )
                                     ) {
                                         Box{
                                             Icon(
@@ -403,7 +406,7 @@ class MainActivity : ComponentActivity() {
 
 
 
-    @Preview(showBackground = true)
+    //@Preview(showBackground = true)
     @Composable
     fun SetPasswordScreen(navController: NavController?=null){
         var password by remember { mutableStateOf("") }
