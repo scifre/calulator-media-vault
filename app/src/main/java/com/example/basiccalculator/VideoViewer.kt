@@ -20,7 +20,10 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -40,6 +43,43 @@ import androidx.navigation.NavController
 fun VideoViewer(navController: NavController? = null, encodedUri: String? = "ed") {
     val context = LocalContext.current
     val videoUri = Uri.parse(encodedUri)
+
+    var deleteAlertDialogState by remember { mutableStateOf(false) }
+    var unhideAlertDialogState by remember { mutableStateOf(false) }
+
+    if(deleteAlertDialogState){
+        AlertDialogBox(
+            alertTitle = "Delete Video?",
+            alertText = "Are you sure you want to delete this video? This operation cannot be undone.",
+            onDismissRequest = {
+                deleteAlertDialogState = false
+            },
+            confirmButtonAction = {
+                MediaHandler.deleteMedia(videoUri)
+                deleteAlertDialogState = false
+                navController?.popBackStack()
+            },
+            alertIcon = Icons.Filled.Delete
+        )
+    }
+
+    if(unhideAlertDialogState){
+        AlertDialogBox(
+            alertTitle = "Unhide Video?",
+            alertText = "Are you sure you want to unhide this video? This operation will restore the video to the gallery.",
+            onDismissRequest = {
+                unhideAlertDialogState = false
+            },
+            confirmButtonAction = {
+                MediaHandler.moveMediaToExtStorage(videoUri, context)
+                unhideAlertDialogState = false
+                navController?.popBackStack()
+            },
+            alertIcon = Icons.Filled.Refresh
+        )
+    }
+
+
 
     Scaffold (
         topBar = {

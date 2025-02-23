@@ -72,6 +72,8 @@ dependencies {
     debugImplementation(libs.androidx.ui.test.manifest)
     // Jetpack Compose integration
     implementation(libs.androidx.navigation.compose)
+
+    //preferences datastore
     implementation(libs.androidx.datastore.preferences)
 
     // Views/Fragments integration
@@ -88,8 +90,7 @@ dependencies {
     implementation(libs.accompanist.pager)
     implementation(libs.accompanist.pager.indicators)
 
-    //Meida Player
-
+    //Media Player
     implementation(libs.androidx.media3.exoplayer)
     implementation(libs.androidx.media3.ui)
 

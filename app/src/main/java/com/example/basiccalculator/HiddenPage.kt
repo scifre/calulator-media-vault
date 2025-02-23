@@ -22,7 +22,8 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.material3.AlertDialog
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -32,7 +33,6 @@ import androidx.compose.material3.TabRow
 import androidx.compose.material3.TabRowDefaults.SecondaryIndicator
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -61,61 +61,6 @@ import kotlinx.coroutines.launch
 import java.io.File
 
 
-@Composable
-fun AlertDialogBox(
-    alertText: String,
-    alertTitle: String,
-    onDismissRequest: () -> Unit,
-    confirmButtonAction: () -> Unit,
-    alertIcon: ImageVector? = null
-){
-    AlertDialog(
-        onDismissRequest = {onDismissRequest()},
-        confirmButton = {
-            TextButton(
-                onClick = {confirmButtonAction()}
-            ) {
-                Text(
-                    text = "OK",
-                    fontSize = 18.sp
-                )
-            }
-        },
-        dismissButton = {
-            TextButton(
-                onClick = {onDismissRequest()}
-            ) {
-                Text(
-                    text = "Cancel",
-                    fontSize = 18.sp
-                )
-            }
-        },
-        title = {
-            Text(
-                text = alertTitle,
-                fontSize = 25.sp,
-            )
-        },
-        text = {
-            Text(
-                text = alertText,
-                fontSize = 18.sp
-            )
-        },
-        icon = {
-            if (alertIcon != null) {
-                Icon(
-                    imageVector = alertIcon,
-                    contentDescription = "Alert Icon"
-                )
-            }
-        }
-    )
-
-}
-
-
 @androidx.annotation.OptIn(UnstableApi::class)
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
@@ -137,8 +82,6 @@ fun HiddenPageGalleryView(navController: NavController){
             .listFiles { file -> file.isFile}
             ?.map(Uri::fromFile)?: emptyList<Uri>()
 
-
-        println(imagesFiles)
         images.clear()
         images.addAll(imagesFiles)
 
@@ -175,14 +118,15 @@ fun HiddenPageGalleryView(navController: NavController){
             }
 
             AlertDialogBox(
-                alertText = "This App needs permission to access your files, this will be used to move your files in and out of the vault. Grant it in the next step",
+                alertText = "Calculator needs permission to access your files, this will be used to move your files in and out of the vault. Grant it in the next step",
                 alertTitle = "Storage Permission required",
                 onDismissRequest = {
                     launchPhotoPicker = false
                 },
                 confirmButtonAction = {
                     launchPhotoPicker = false
-                    activity?.startActivity(intent)}
+                    activity?.startActivity(intent)},
+                alertIcon = Icons.Filled.Info
             )
 
         } else{

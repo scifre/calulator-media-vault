@@ -47,6 +47,7 @@ fun ImageViewer(navController: NavController? = null, encodedUri: String? = "Ima
     var deleteAlertDialogState by remember { mutableStateOf(false) }
     var unhideAlertDialogState by remember { mutableStateOf(false) }
     println(imageUri.toString())
+
     val context = LocalContext.current
 
 
