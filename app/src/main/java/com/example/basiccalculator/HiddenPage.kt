@@ -24,9 +24,11 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
@@ -88,8 +90,6 @@ fun HiddenPageGalleryView(navController: NavController){
         videos.clear()
         videos.addAll(videoFiles)
     }
-    
-
 
     LaunchedEffect(Unit) {
         loadMediaDynamically()
@@ -170,10 +170,25 @@ fun HiddenPageGalleryView(navController: NavController){
                         color = Color.White
                     )
                 },
+                actions = {
+                    IconButton(
+                        onClick = {
+                            navController.navigate("settings")
+                        }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.Settings,
+                            contentDescription = "Settings",
+                            tint = Color.White,
+                            modifier = Modifier.size(40.dp)
+                        )
+                    }
+                },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = darkOrange)
             )
         }
+        
     ) {paddingValues->
         val listState = rememberLazyGridState()
         val pagerState = rememberPagerState(
@@ -303,5 +318,4 @@ fun HiddenPageGalleryView(navController: NavController){
         LaunchPhotoPicker()
         //launchPhotoPicker = false
     }
-
 }

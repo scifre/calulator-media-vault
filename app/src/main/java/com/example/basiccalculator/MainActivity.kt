@@ -110,6 +110,8 @@ class MainActivity : ComponentActivity() {
                     VideoViewer(navController = navController, encodedUri = encodedUri)
                 }
                 composable("app_opener") { AppOpener() }
+                composable("reset_password") { ResetPassword(navController) }
+                composable("settings") { SettingsActivity(navController)  }
 
 
             }
@@ -406,9 +408,9 @@ class MainActivity : ComponentActivity() {
 
 
 
-    //@Preview(showBackground = true)
+    @Preview(showBackground = true)
     @Composable
-    fun SetPasswordScreen(navController: NavController?=null){
+    fun SetPasswordScreen(navController: NavController?=null) {
         var password by remember { mutableStateOf("") }
         var confirmPassword by remember { mutableStateOf("") }
         var isPasswordFocused by remember { mutableStateOf(false) }
@@ -416,169 +418,172 @@ class MainActivity : ComponentActivity() {
         var isSetPasswordButtonClickable by remember { mutableStateOf(false) }
 
 
-        fun onClickSetPassword(password:String, confirmPassword:String){
-            if(password == confirmPassword){
+        fun onClickSetPassword(password: String, confirmPassword: String) {
+            if (password == confirmPassword) {
                 val passwordHash = sha256(password)
                 navController?.navigate("security_question/$passwordHash")
             }
 
         }
+
         val focusManager = LocalFocusManager.current
-        Column (
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(all = 16.dp)
-                .clickable(
-                    interactionSource = remember { MutableInteractionSource() },
-                    indication = null
-                ) {
-                    focusManager.clearFocus()
-                },
-        ){
-            Spacer(modifier = Modifier.size(50.dp))
-            Text(
-                text = "Setup a Vault PIN",
-                fontSize = 40.sp,
-                color = Color(0xFFE0801F),
-                fontWeight = FontWeight.Bold,
-                fontFamily = poppinsFontFamily
-            )
-            Spacer(modifier = Modifier.size(30.dp))
-            Text(text = "Hello! Set up your vault PIN, that will be used to access it.",
-                fontSize = 18.sp,
-                modifier = Modifier,
-                color = Color.DarkGray,
-                textAlign = TextAlign.Center,
-                fontFamily = poppinsFontFamily
-
-            )
-            Spacer(modifier = Modifier.size(50.dp))
-            OutlinedTextField(
-                value = password,
-                onValueChange = {newText: String ->
-                    if(newText.length <= 6 && newText.all { c: Char -> c.isDigit() }){
-                        password = newText
-                    }
-                },
-                label = {
-                    Text(
-                        text = "Enter PIN",
-                        color = if(isPasswordFocused){Color(0xFFE0801F)} else Color.DarkGray,
-                        fontSize = if(password.isNotEmpty() || isPasswordFocused) 15.sp else 20.sp,
-                        modifier = Modifier
-
-
-
-                    )
-                },
-
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.NumberPassword
-                ),
-
-                textStyle = TextStyle(
-                    fontSize = 20.sp
-                ),
-                singleLine = true,
-                placeholder = {Text("Enter 6-digit PIN")},
+        Scaffold { paddingValues ->
+            Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .onFocusChanged { focusState ->
-                        isPasswordFocused = focusState.isFocused
+                    .fillMaxSize()
+                    .padding(paddingValues)
+                    .padding(all = 16.dp)
+                    .clickable(
+                        interactionSource = remember { MutableInteractionSource() },
+                        indication = null
+                    ) {
+                        focusManager.clearFocus()
                     },
-                colors = OutlinedTextFieldDefaults.colors(
-                    focusedContainerColor = Color.White,
-                    unfocusedContainerColor = Color(0xFFFBE8CD),
-                    focusedBorderColor = Color(0xFFE0801F)
+            ) {
+                Spacer(modifier = Modifier.size(50.dp))
+                Text(
+                    text = "Setup a Vault PIN",
+                    fontSize = 40.sp,
+                    color = Color(0xFFE0801F),
+                    fontWeight = FontWeight.Bold,
+                    fontFamily = poppinsFontFamily
                 )
+                Spacer(modifier = Modifier.size(30.dp))
+                Text(
+                    text = "Hello! Set up your vault PIN, that will be used to access it.",
+                    fontSize = 18.sp,
+                    modifier = Modifier,
+                    color = Color.DarkGray,
+                    textAlign = TextAlign.Center,
+                    fontFamily = poppinsFontFamily
 
-            )
-            Text(
-                text = if(password.isNotEmpty() && password.length<6){
-                    "PIN should be 6 digits"
-                }
-                else{
-                    ""
-                },
-                modifier = Modifier.padding(top = 5.dp),
-                color = Color.Red,
-                fontSize = 15.sp
-            )
-            //Spacer(modifier = Modifier.size(30.dp))
+                )
+                Spacer(modifier = Modifier.size(50.dp))
+                OutlinedTextField(
+                    value = password,
+                    onValueChange = { newText: String ->
+                        if (newText.length <= 6 && newText.all { c: Char -> c.isDigit() }) {
+                            password = newText
+                        }
+                    },
+                    label = {
+                        Text(
+                            text = "Enter PIN",
+                            color = if (isPasswordFocused) {
+                                Color(0xFFE0801F)
+                            } else Color.DarkGray,
+                            fontSize = if (password.isNotEmpty() || isPasswordFocused) 15.sp else 20.sp,
+                            modifier = Modifier
 
-            OutlinedTextField(
-                value = confirmPassword,
-                onValueChange = {newText: String ->
-                    if(newText.length <= 6 && newText.all { c: Char -> c.isDigit() }){
-                        confirmPassword = newText
-                    }
-                },
-                label = {
-                    Text(
-                        text = "Confirm PIN",
-                        color = Color.DarkGray,
-                        fontSize = if(confirmPassword.isNotEmpty() || isConfirmPasswordFocused) 15.sp else 20.sp,
-                        modifier = Modifier
+
+                        )
+                    },
+
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.NumberPassword
+                    ),
+
+                    textStyle = TextStyle(
+                        fontSize = 20.sp
+                    ),
+                    singleLine = true,
+                    placeholder = { Text("Enter 6-digit PIN") },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .onFocusChanged { focusState ->
+                            isPasswordFocused = focusState.isFocused
+                        },
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedContainerColor = Color.White,
+                        unfocusedContainerColor = Color(0xFFFBE8CD),
+                        focusedBorderColor = Color(0xFFE0801F)
                     )
-                },
-                textStyle = TextStyle(
-                    fontSize = 20.sp
-                ),
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.NumberPassword
-                ),
-                singleLine = true,
-                placeholder = {Text("Enter 6-digit PIN")},
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .onFocusChanged { focusState ->
-                        isConfirmPasswordFocused = focusState.isFocused
-                    },
-                colors = OutlinedTextFieldDefaults.colors(
-                    focusedContainerColor = Color.White,
-                    unfocusedContainerColor = Color(0xFFFBE8CD),
-                    focusedBorderColor = Color(0xFFE0801F),
-                )
-            )
 
-            Text(
-                text = if(confirmPassword.isNotEmpty() && (password != confirmPassword)){
-                    "PINs should match"
-                    }
-                    else{
+                )
+                Text(
+                    text = if (password.isNotEmpty() && password.length < 6) {
+                        "PIN should be 6 digits"
+                    } else {
                         ""
                     },
-                modifier = Modifier.padding(top = 5.dp),
-                color = Color.Red,
-                fontSize = 15.sp
-            )
-            if(password.isNotEmpty() && confirmPassword.isNotEmpty() && password == confirmPassword){
-                isSetPasswordButtonClickable = true
-            }
-            else{
-                isSetPasswordButtonClickable = false
-            }
-
-            //Spacer(modifier = Modifier.size(50.dp))
-            Button(
-                onClick = {onClickSetPassword(password, confirmPassword)},
-                enabled = isSetPasswordButtonClickable,
-                modifier = Modifier
-                    .height(50.dp)
-                    .fillMaxWidth(),
-
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(0xFFE0801F)
-                ),
-                shape = RoundedCornerShape(5.dp),
-                elevation = ButtonDefaults.buttonElevation(
-                    defaultElevation = 10.dp
+                    modifier = Modifier.padding(top = 5.dp),
+                    color = Color.Red,
+                    fontSize = 15.sp
                 )
-            ) {
+                //Spacer(modifier = Modifier.size(30.dp))
+
+                OutlinedTextField(
+                    value = confirmPassword,
+                    onValueChange = { newText: String ->
+                        if (newText.length <= 6 && newText.all { c: Char -> c.isDigit() }) {
+                            confirmPassword = newText
+                        }
+                    },
+                    label = {
+                        Text(
+                            text = "Confirm PIN",
+                            color = Color.DarkGray,
+                            fontSize = if (confirmPassword.isNotEmpty() || isConfirmPasswordFocused) 15.sp else 20.sp,
+                            modifier = Modifier
+                        )
+                    },
+                    textStyle = TextStyle(
+                        fontSize = 20.sp
+                    ),
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.NumberPassword
+                    ),
+                    singleLine = true,
+                    placeholder = { Text("Enter 6-digit PIN") },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .onFocusChanged { focusState ->
+                            isConfirmPasswordFocused = focusState.isFocused
+                        },
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedContainerColor = Color.White,
+                        unfocusedContainerColor = Color(0xFFFBE8CD),
+                        focusedBorderColor = Color(0xFFE0801F),
+                    )
+                )
+
                 Text(
-                    text = "Set Password",
-                    fontSize = 20.sp
+                    text = if (confirmPassword.isNotEmpty() && (password != confirmPassword)) {
+                        "PINs should match"
+                    } else {
+                        ""
+                    },
+                    modifier = Modifier.padding(top = 5.dp),
+                    color = Color.Red,
+                    fontSize = 15.sp
                 )
+                if (password.isNotEmpty() && confirmPassword.isNotEmpty() && password == confirmPassword) {
+                    isSetPasswordButtonClickable = true
+                } else {
+                    isSetPasswordButtonClickable = false
+                }
+
+                //Spacer(modifier = Modifier.size(50.dp))
+                Button(
+                    onClick = { onClickSetPassword(password, confirmPassword) },
+                    enabled = isSetPasswordButtonClickable,
+                    modifier = Modifier
+                        .height(50.dp)
+                        .fillMaxWidth(),
+
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = darkOrange
+                    ),
+                    shape = RoundedCornerShape(5.dp),
+                    elevation = ButtonDefaults.buttonElevation(
+                        defaultElevation = 10.dp
+                    )
+                ) {
+                    Text(
+                        text = "Set Password",
+                        fontSize = 20.sp
+                    )
+                }
             }
         }
     }

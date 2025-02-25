@@ -107,7 +107,8 @@ fun SetSecurityQuestion(navController: NavController? = null, passwordHash: Stri
                 label = {
                     Text(
                         text = "Security Question",
-                        fontSize = if(selectedSecurityQuestion.isNotEmpty()||isSecurityQuestionFocused)15.sp else 20.sp
+                        fontSize = if(selectedSecurityQuestion.isNotEmpty()||isSecurityQuestionFocused)15.sp else 20.sp,
+                        fontFamily = poppinsFontFamily
                     )
                 },
                 placeholder = {
@@ -116,9 +117,9 @@ fun SetSecurityQuestion(navController: NavController? = null, passwordHash: Stri
                         fontSize = 20.sp
                     )
                 },
-                textStyle = TextStyle(
+                /*textStyle = TextStyle(
                         fontSize = 20.sp,
-                ),
+                ),*/
                 singleLine = true,
                 onValueChange = {newText:String ->
                     selectedSecurityQuestion = newText
@@ -137,7 +138,8 @@ fun SetSecurityQuestion(navController: NavController? = null, passwordHash: Stri
                     },
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedContainerColor = Color.White,
-                    unfocusedContainerColor = lightOrange
+                    unfocusedContainerColor = lightOrange,
+                    focusedBorderColor = darkOrange
                 )
 
             )
@@ -176,7 +178,8 @@ fun SetSecurityQuestion(navController: NavController? = null, passwordHash: Stri
             label = {
                 Text(
                     text = "Answer",
-                    fontSize = if(securityAnswer.isNotEmpty()||isSecurityAnswerFocused) 15.sp else 20.sp
+                    fontSize = if(securityAnswer.isNotEmpty()||isSecurityAnswerFocused) 15.sp else 20.sp,
+                    fontFamily = poppinsFontFamily
                 )
             },
             onValueChange = {newText:String ->
