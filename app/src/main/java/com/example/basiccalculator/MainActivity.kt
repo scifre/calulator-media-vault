@@ -5,6 +5,13 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.ExitTransition
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -83,6 +90,12 @@ class MainActivity : ComponentActivity() {
             LaunchedEffect(Unit) {
                 isPasswordSet = Preferences.isPasswordSet(context = this@MainActivity)
             }
+            fun AnimatedContentTransitionScope<*>.splitExitTransition(): ExitTransition {
+                return slideOutVertically(
+                    targetOffsetY = { fullHeight -> if (fullHeight > 0) -fullHeight / 2 else fullHeight / 2  },
+                    animationSpec = tween(700)
+                ) + fadeOut(animationSpec = tween(700))
+            }
 
             NavHost(
                 navController = navController,
@@ -94,18 +107,56 @@ class MainActivity : ComponentActivity() {
             ) {
                 composable("main") { BasicCalculator(navController) }
                 composable("hidden") {HiddenPageGalleryView(navController = navController)}
-                composable("image_viewer/{encodedUri}") { backStackEntry ->
+                composable("image_viewer/{encodedUri}",
+                    enterTransition = {
+                        slideInHorizontally(
+                            initialOffsetX = {it},
+                            animationSpec = tween(200)
+                        )
+                    },
+                    exitTransition = {
+                        slideOutHorizontally(
+                            targetOffsetX = {it},
+                            animationSpec = tween(200)
+                        )
+                    }
+                ) { backStackEntry ->
                         val encodedUri = backStackEntry.arguments?.getString("encodedUri")
                         ImageViewer(navController, encodedUri)
                 }
                 composable("set_password") { SetPasswordScreen(navController = navController) }
-                composable("security_question/{passwordHash}") {backStackEntry ->
+                composable(
+                    route = "security_question/{passwordHash}",
+                    enterTransition = {
+                        slideInHorizontally(
+                            initialOffsetX = {it}
+                        )
+                    },
+                    exitTransition = {
+                        slideOutHorizontally(
+                            targetOffsetX = {-it}
+                        )
+                    }
+                ) {backStackEntry ->
                     val passwordHash = backStackEntry.arguments?.getString("passwordHash")
                     if (passwordHash != null) {
                         SetSecurityQuestion(navController = navController, passwordHash = passwordHash)
                     }
                 }
-                composable("video_player/{encodedUri}"){backstackEntry ->
+                composable("video_player/{encodedUri}",
+                    enterTransition = {
+                        slideInHorizontally(
+                            initialOffsetX = {it},
+                            animationSpec = tween(200)
+                        )
+                    },
+                    exitTransition = {
+                        slideOutHorizontally(
+                            targetOffsetX = {it},
+                            animationSpec = tween(200)
+                        )
+                    }
+                ){backstackEntry ->
                     val encodedUri = backstackEntry.arguments?.getString("encodedUri")
                     VideoViewer(navController = navController, encodedUri = encodedUri)
                 }

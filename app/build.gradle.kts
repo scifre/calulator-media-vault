@@ -95,6 +95,7 @@ dependencies {
     implementation(libs.androidx.media3.ui)
 
 
+
     //Coil
     implementation(libs.coil)
     implementation(libs.coil.kt.coil.video)

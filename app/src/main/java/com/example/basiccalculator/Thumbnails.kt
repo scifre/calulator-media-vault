@@ -28,6 +28,7 @@ class Thumbnails {
     companion object {
         @Composable
         fun ImageThumbnail(image: Uri, navController: NavController) {
+
             AsyncImage(
                 model = image,
                 contentDescription = "Image Thumbnail",

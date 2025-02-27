@@ -50,8 +50,6 @@ fun ImageViewer(navController: NavController? = null, encodedUri: String? = "Ima
 
     val context = LocalContext.current
 
-
-
     if(unhideAlertDialogState){
         AlertDialogBox(
             alertText = "Are you sure you want to unhide this image? This operation will the image back to the gallery.",
@@ -161,7 +159,6 @@ fun ImageViewer(navController: NavController? = null, encodedUri: String? = "Ima
             modifier = Modifier
                 .padding(paddingValues)
                 .fillMaxSize()
-
         ) {
             AsyncImage(
                 model = imageUri,
