@@ -5,6 +5,7 @@ import android.content.Context
 import android.database.Cursor
 import android.net.Uri
 import android.provider.OpenableColumns
+import android.widget.Toast
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Icon
@@ -74,8 +75,11 @@ suspend fun navigateToVault(password: String, navController: NavController, cont
 
     if(enteredPasswordHash==savedPasswordHash){
         navController.navigate("hidden")
+        Toast.makeText(context, "Vault Unlocked", Toast.LENGTH_SHORT).show()
     }
 }
+
+
 
 fun filenameFromUri(uri: Uri, context: Context): String {
     if(uri.scheme.equals("content")){

@@ -8,11 +8,13 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
@@ -58,13 +60,13 @@ import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -110,7 +112,16 @@ class MainActivity : ComponentActivity() {
                 }
             ) {
                 composable(
-                    route ="main"
+                    route ="main",
+                    enterTransition = {
+                        fadeIn(animationSpec = tween(10))
+                    },
+                    exitTransition = {
+                        slideOutVertically(
+                            targetOffsetY = { -it },
+                            animationSpec = tween(500)
+                        )
+                    }
                 ) { BasicCalculator(navController) }
                 composable(
                     route = "hidden"
@@ -179,7 +190,31 @@ class MainActivity : ComponentActivity() {
                     val encodedUri = backstackEntry.arguments?.getString("encodedUri")
                     VideoViewer(navController = navController, encodedUri = encodedUri)
                 }
-                composable("app_opener") { Box(modifier = Modifier.fillMaxSize())}
+                composable(
+                    route = "app_opener"
+                ) {
+                    Column(Modifier.fillMaxSize()){
+                        Spacer(modifier = Modifier.size(300.dp))
+                        Image(
+                            painter = painterResource(id = R.drawable.calculator_icon),
+                            contentDescription = "app icon",
+                            modifier = Modifier
+                                .size(200.dp)
+                                .align(Alignment.CenterHorizontally)
+                        )
+                        Text(
+                            text = "Calculator",
+                            fontFamily = poppinsFontFamily,
+                            color = darkOrange,
+                            fontSize = 40.sp,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier
+                                .fillMaxWidth(),
+                            textAlign = TextAlign.Center
+                        )
+                    }
+
+                }
                 composable(
                     route = "reset_password",
                     enterTransition = {
@@ -216,6 +251,7 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
+
 
 
     @Composable
@@ -284,7 +320,6 @@ class MainActivity : ComponentActivity() {
 
 
     @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
-    @Preview(showBackground = true)
     @Composable
     fun BasicCalculator(navController: NavController? = null) {
         val context = LocalContext.current
@@ -506,8 +541,6 @@ class MainActivity : ComponentActivity() {
     }
 
 
-
-    @Preview(showBackground = true)
     @Composable
     fun SetPasswordScreen(navController: NavController?=null) {
         var password by remember { mutableStateOf("") }
@@ -686,7 +719,6 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
-
 
 
 
