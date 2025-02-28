@@ -8,6 +8,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -55,8 +56,7 @@ class Thumbnails {
 
             val time = videoLength(context, video)
 
-            Box(contentAlignment = Alignment.BottomEnd) {
-
+            Box() {
                 AsyncImage(
                     model = ImageRequest.Builder(context)
                         .data(video)
@@ -85,14 +85,24 @@ class Thumbnails {
                     contentScale = ContentScale.Crop
                 )
 
-                Box {
-                    Text(
-                        text = time,
-                        color = Color.White,
-                        fontFamily = poppinsFontFamily
 
-                    )
-                }
+                AsyncImage(
+                    model = R.drawable.play,
+                    contentDescription = "Play Icon",
+                    modifier = Modifier
+                        .size(70.dp)
+                        .align(Alignment.Center),
+                )
+
+                Text(
+                    text = time,
+                    color = Color.White,
+                    fontFamily = poppinsFontFamily,
+                    modifier = Modifier
+                        .padding(end = 4.dp)
+                        .align(Alignment.BottomEnd)
+                )
+
 
             }
         }

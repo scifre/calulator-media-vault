@@ -1,4 +1,4 @@
-package com.example.basiccalculator
+package com.example.basiccalculator.auth
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -35,6 +35,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.basiccalculator.Preferences
+import com.example.basiccalculator.darkOrange
+import com.example.basiccalculator.lightOrange
+import com.example.basiccalculator.poppinsFontFamily
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -225,7 +229,11 @@ fun SetSecurityQuestion(navController: NavController? = null, passwordHash: Stri
 
         ){
             scope.launch() {
-                Preferences.saveSecurityQuestionAndAnswer(context = context, securityQuestion = selectedSecurityQuestion, securityAnswer = securityAnswer)
+                Preferences.saveSecurityQuestionAndAnswer(
+                    context = context,
+                    securityQuestion = selectedSecurityQuestion,
+                    securityAnswer = securityAnswer
+                )
                 Preferences.savePassword(context = context, password = passwordHash)
                 navController?.navigate("main")
             }

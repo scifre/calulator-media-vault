@@ -1,4 +1,4 @@
-package com.example.basiccalculator
+package com.example.basiccalculator.auth
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -47,6 +47,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.basiccalculator.Preferences
+import com.example.basiccalculator.darkOrange
+import com.example.basiccalculator.lightOrange
+import com.example.basiccalculator.poppinsFontFamily
+import com.example.basiccalculator.sha256
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 

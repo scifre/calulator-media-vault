@@ -256,7 +256,7 @@ fun HiddenPageGalleryView(navController: NavController){
 
             HorizontalPager(
                 state = pagerState,
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier.fillMaxWidth()
             ) {page->
                 when(page){
                     0 -> {
@@ -267,7 +267,7 @@ fun HiddenPageGalleryView(navController: NavController){
                                 state = listState,
                                 columns = GridCells.Fixed(4),
                                 modifier = Modifier
-                                    .padding(paddingValues)
+                                    .padding(top = 5.dp)
                                     .fillMaxSize()
                             ) {
                                 items(images.size){index->
@@ -294,7 +294,7 @@ fun HiddenPageGalleryView(navController: NavController){
                             LazyVerticalGrid(
                                 columns = GridCells.Fixed(4),
                                 modifier = Modifier
-                                    .padding(paddingValues)
+                                    .padding(top = 5.dp)
                                     .fillMaxSize()
                             ) {
                                 items(videos.size){index->

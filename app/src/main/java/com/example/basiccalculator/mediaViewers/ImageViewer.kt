@@ -1,4 +1,4 @@
-package com.example.basiccalculator
+package com.example.basiccalculator.mediaViewers
 
 import android.net.Uri
 import androidx.compose.foundation.layout.Box
@@ -32,8 +32,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
+import com.example.basiccalculator.AlertDialogBox
 import com.example.basiccalculator.MediaHandler.Companion.deleteMedia
 import com.example.basiccalculator.MediaHandler.Companion.moveMediaToExtStorage
+import com.example.basiccalculator.darkOrange
+import com.example.basiccalculator.poppinsFontFamily
 
 @Preview(showBackground = true)
 @OptIn(ExperimentalMaterial3Api::class)
@@ -52,7 +55,7 @@ fun ImageViewer(navController: NavController? = null, encodedUri: String? = "Ima
 
     if(unhideAlertDialogState){
         AlertDialogBox(
-            alertText = "Are you sure you want to unhide this image? This operation will the image back to the gallery.",
+            alertText = "This operation will move the image back to the gallery.",
             alertTitle = "Unhide this Image?",
             onDismissRequest = {unhideAlertDialogState = false},
             confirmButtonAction = {

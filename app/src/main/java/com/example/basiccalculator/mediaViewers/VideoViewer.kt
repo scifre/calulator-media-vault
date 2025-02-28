@@ -1,4 +1,4 @@
-package com.example.basiccalculator
+package com.example.basiccalculator.mediaViewers
 
 import android.net.Uri
 import android.view.ViewGroup
@@ -36,6 +36,10 @@ import androidx.media3.common.MediaItem
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.PlayerView
 import androidx.navigation.NavController
+import com.example.basiccalculator.AlertDialogBox
+import com.example.basiccalculator.MediaHandler
+import com.example.basiccalculator.darkOrange
+import com.example.basiccalculator.poppinsFontFamily
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Preview(showBackground = true)

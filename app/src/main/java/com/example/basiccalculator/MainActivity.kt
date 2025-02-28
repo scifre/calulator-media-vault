@@ -71,6 +71,10 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.basiccalculator.auth.ResetPassword
+import com.example.basiccalculator.auth.SetSecurityQuestion
+import com.example.basiccalculator.mediaViewers.ImageViewer
+import com.example.basiccalculator.mediaViewers.VideoViewer
 import kotlinx.coroutines.launch
 
 
@@ -105,26 +109,40 @@ class MainActivity : ComponentActivity() {
                     else -> "app_opener"
                 }
             ) {
-                composable("main") { BasicCalculator(navController) }
-                composable("hidden") {HiddenPageGalleryView(navController = navController)}
-                composable("image_viewer/{encodedUri}",
+                composable(
+                    route ="main"
+                ) { BasicCalculator(navController) }
+                composable(
+                    route = "hidden"
+                ) {HiddenPageGalleryView(navController = navController)}
+                composable(
+                    route = "image_viewer/{encodedUri}",
                     enterTransition = {
                         slideInHorizontally(
                             initialOffsetX = {it},
-                            animationSpec = tween(200)
+                            animationSpec = tween(400)
                         )
                     },
                     exitTransition = {
                         slideOutHorizontally(
                             targetOffsetX = {it},
-                            animationSpec = tween(200)
+                            animationSpec = tween(400)
                         )
                     }
                 ) { backStackEntry ->
                         val encodedUri = backStackEntry.arguments?.getString("encodedUri")
                         ImageViewer(navController, encodedUri)
                 }
-                composable("set_password") { SetPasswordScreen(navController = navController) }
+                composable(
+                    route = "set_password",
+                    exitTransition = {
+                        slideOutHorizontally(
+                            targetOffsetX = {-it},
+                            animationSpec = tween(durationMillis = 500)
+                        )
+                    }
+                ) { SetPasswordScreen(navController = navController) }
+
                 composable(
                     route = "security_question/{passwordHash}",
                     enterTransition = {
@@ -143,26 +161,56 @@ class MainActivity : ComponentActivity() {
                         SetSecurityQuestion(navController = navController, passwordHash = passwordHash)
                     }
                 }
-                composable("video_player/{encodedUri}",
+                composable(
+                    route = "video_player/{encodedUri}",
                     enterTransition = {
                         slideInHorizontally(
                             initialOffsetX = {it},
-                            animationSpec = tween(200)
+                            animationSpec = tween(500)
                         )
                     },
                     exitTransition = {
                         slideOutHorizontally(
                             targetOffsetX = {it},
-                            animationSpec = tween(200)
+                            animationSpec = tween(500)
                         )
                     }
                 ){backstackEntry ->
                     val encodedUri = backstackEntry.arguments?.getString("encodedUri")
                     VideoViewer(navController = navController, encodedUri = encodedUri)
                 }
-                composable("app_opener") { AppOpener() }
-                composable("reset_password") { ResetPassword(navController) }
-                composable("settings") { SettingsActivity(navController)  }
+                composable("app_opener") { Box(modifier = Modifier.fillMaxSize())}
+                composable(
+                    route = "reset_password",
+                    enterTransition = {
+                        slideInHorizontally(
+                            initialOffsetX = {it},
+                            animationSpec = tween(500)
+                        )
+                    },
+                    exitTransition = {
+                        slideOutHorizontally(
+                            targetOffsetX = {it},
+                            animationSpec = tween(500)
+                        )
+                    }
+                ) { ResetPassword(navController) }
+
+                composable(
+                    route = "settings",
+                    enterTransition = {
+                        slideInHorizontally(
+                            initialOffsetX = {it},
+                            animationSpec = tween(500)
+                        )
+                    },
+                    exitTransition = {
+                        slideOutHorizontally(
+                            targetOffsetX = {it},
+                            animationSpec = tween(500)
+                        )
+                    }
+                ) { SettingsActivity(navController)  }
 
 
             }
