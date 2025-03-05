@@ -1,9 +1,10 @@
-package com.example.basiccalculator
+package com.example.basiccalculator.ui.theme
 
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import com.example.basiccalculator.R
 
 val poppinsFontFamily = FontFamily(
     Font(R.font.poppins_regular, FontWeight.Normal),

@@ -17,6 +17,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.basiccalculator.ui.theme.darkOrange
 import kotlinx.coroutines.flow.first
 import net.objecthunter.exp4j.ExpressionBuilder
 import java.security.MessageDigest

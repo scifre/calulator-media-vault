@@ -38,8 +38,8 @@ import androidx.media3.ui.PlayerView
 import androidx.navigation.NavController
 import com.example.basiccalculator.AlertDialogBox
 import com.example.basiccalculator.MediaHandler
-import com.example.basiccalculator.darkOrange
-import com.example.basiccalculator.poppinsFontFamily
+import com.example.basiccalculator.ui.theme.darkOrange
+import com.example.basiccalculator.ui.theme.poppinsFontFamily
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Preview(showBackground = true)

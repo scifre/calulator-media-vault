@@ -35,8 +35,8 @@ import coil.compose.AsyncImage
 import com.example.basiccalculator.AlertDialogBox
 import com.example.basiccalculator.MediaHandler.Companion.deleteMedia
 import com.example.basiccalculator.MediaHandler.Companion.moveMediaToExtStorage
-import com.example.basiccalculator.darkOrange
-import com.example.basiccalculator.poppinsFontFamily
+import com.example.basiccalculator.ui.theme.darkOrange
+import com.example.basiccalculator.ui.theme.poppinsFontFamily
 
 @Preview(showBackground = true)
 @OptIn(ExperimentalMaterial3Api::class)

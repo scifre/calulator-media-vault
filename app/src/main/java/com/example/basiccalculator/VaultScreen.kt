@@ -63,6 +63,9 @@ import androidx.navigation.NavController
 import com.example.basiccalculator.MediaHandler.Companion.moveMediaToVault
 import com.example.basiccalculator.Thumbnails.Companion.ImageThumbnail
 import com.example.basiccalculator.Thumbnails.Companion.VideoThumbnail
+import com.example.basiccalculator.ui.theme.darkOrange
+import com.example.basiccalculator.ui.theme.lightOrange
+import com.example.basiccalculator.ui.theme.poppinsFontFamily
 import kotlinx.coroutines.launch
 import java.io.File
 
@@ -203,7 +206,8 @@ fun HiddenPageGalleryView(navController: NavController){
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = darkOrange)
+                    containerColor = darkOrange
+                )
             )
         }
         

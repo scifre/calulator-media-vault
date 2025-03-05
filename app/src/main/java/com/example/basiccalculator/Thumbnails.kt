@@ -23,6 +23,7 @@ import coil.decode.VideoFrameDecoder
 import coil.request.CachePolicy
 import coil.request.ImageRequest
 import coil.request.videoFrameMillis
+import com.example.basiccalculator.ui.theme.poppinsFontFamily
 import java.util.Locale
 
 class Thumbnails {

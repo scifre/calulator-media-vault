@@ -28,6 +28,8 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import androidx.navigation.NavController
+import com.example.basiccalculator.ui.theme.darkOrange
+import com.example.basiccalculator.ui.theme.poppinsFontFamily
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
@@ -109,7 +111,8 @@ fun SettingsActivity(navController: NavController? = null){
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = darkOrange)
+                    containerColor = darkOrange
+                )
             )
         }
     ) {paddingValues ->

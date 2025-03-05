@@ -48,9 +48,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.basiccalculator.Preferences
-import com.example.basiccalculator.darkOrange
-import com.example.basiccalculator.lightOrange
-import com.example.basiccalculator.poppinsFontFamily
+import com.example.basiccalculator.ui.theme.darkOrange
+import com.example.basiccalculator.ui.theme.lightOrange
+import com.example.basiccalculator.ui.theme.poppinsFontFamily
 import com.example.basiccalculator.sha256
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
