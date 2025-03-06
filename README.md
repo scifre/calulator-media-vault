@@ -14,7 +14,7 @@ A secure **vault** disguised as a **calculator**. Enter a **PIN** to unlock hidd
 
 Here are some screenshots:
 
-![Main Screen](/screenshots/Screenshot_20250305_195810.png | width=100)
+![Main Screen](/screenshots/Screenshot_20250305_195810.png|width=100)
 
 ## Installation
 
