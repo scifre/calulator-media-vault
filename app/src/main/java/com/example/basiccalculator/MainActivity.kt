@@ -26,6 +26,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
@@ -56,6 +57,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.LifecycleOwner
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -77,12 +80,13 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         //setting up permissionLauncher which is needs to be setup in OnCreate
 
+        //BasicCalculator(navController)
+
         enableEdgeToEdge()
         setContent {
-
             val navController = rememberNavController()
+            lifecycle.addObserver(BackGroundNavigationObserver(navController))
 
-            //BasicCalculator(navController)
             var isPasswordSet: Boolean? by remember { mutableStateOf(null) }
             LaunchedEffect(Unit) {
                 isPasswordSet = Preferences.isPasswordSet(context = this@MainActivity)
@@ -126,8 +130,8 @@ class MainActivity : ComponentActivity() {
                         )
                     }
                 ) { backStackEntry ->
-                        val encodedUri = backStackEntry.arguments?.getString("encodedUri")
-                        ImageViewer(navController, encodedUri)
+                    val encodedUri = backStackEntry.arguments?.getString("encodedUri")
+                    ImageViewer(navController, encodedUri)
                 }
                 composable(
                     route = "set_password",
@@ -232,22 +236,20 @@ class MainActivity : ComponentActivity() {
                     }
                 ) { SettingsActivity(navController)  }
 
-
             }
+
         }
     }
 
-
-
     @Composable
     fun CalcScreen(num: String, modifier: Modifier = Modifier) {
-
         Box(
             modifier = modifier
                 .fillMaxWidth()
                 .background(color = Color.White),
 
             ) {
+
             Text(
                 text = num,
                 fontFamily = poppinsFontFamily,
@@ -348,6 +350,9 @@ class MainActivity : ComponentActivity() {
                                 CalcScreen(num = displayNum, modifier = Modifier.weight(1f))
                                 //First Row --> C % <-
                                 Row {
+                                    ElevatedButton(onClick = {}) {
+                                        Text("Hi")
+                                    }
                                     CalcButton(
                                         sym = "C",
                                         modifier = Modifier
@@ -526,7 +531,26 @@ class MainActivity : ComponentActivity() {
     }
 
 
+class BackGroundNavigationObserver(
+    private val navController: NavController?
+): DefaultLifecycleObserver {
 
+
+    override fun onStop(owner: LifecycleOwner) {
+
+        val currentDestination = navController?.currentBackStackEntry?.destination?.route
+
+        if(currentDestination != "main"){
+            navController?.navigate("main"){
+                popUpTo("main"){
+                    inclusive = true
+                }
+            }
+        }
+
+    }
+
+}
 
 
 

@@ -25,6 +25,8 @@ import coil.request.ImageRequest
 import coil.request.videoFrameMillis
 import com.example.basiccalculator.ui.theme.poppinsFontFamily
 import java.util.Locale
+import com.example.basiccalculator.mediaViewers.ImageViewer
+import com.example.basiccalculator.mediaViewers.VideoViewer
 
 class Thumbnails {
     companion object {
@@ -46,6 +48,7 @@ class Thumbnails {
                         spotColor = Color.Black
                     )
                     .clickable {
+                        println("thumbnail navigate")
                         navController.navigate("image_viewer/${Uri.encode(image.toString())}")
                     },
                 contentScale = ContentScale.Crop

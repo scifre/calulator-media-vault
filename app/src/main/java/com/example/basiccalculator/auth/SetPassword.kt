@@ -30,6 +30,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -37,6 +38,7 @@ import com.example.basiccalculator.sha256
 import com.example.basiccalculator.ui.theme.darkOrange
 import com.example.basiccalculator.ui.theme.poppinsFontFamily
 
+@Preview
 @Composable
 fun SetPasswordScreen(navController: NavController?=null) {
     var password by remember { mutableStateOf("") }
@@ -204,7 +206,7 @@ fun SetPasswordScreen(navController: NavController?=null) {
                 ),
                 shape = RoundedCornerShape(5.dp),
                 elevation = ButtonDefaults.buttonElevation(
-                    defaultElevation = 10.dp
+                    defaultElevation = 5.dp
                 )
             ) {
                 Text(

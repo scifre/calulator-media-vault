@@ -94,6 +94,7 @@ dependencies {
     implementation(libs.androidx.media3.exoplayer)
     implementation(libs.androidx.media3.ui)
 
+    implementation ("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
 
 
     //Coil
