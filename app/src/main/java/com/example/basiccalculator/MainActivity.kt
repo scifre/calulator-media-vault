@@ -26,7 +26,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
@@ -350,9 +349,6 @@ class MainActivity : ComponentActivity() {
                                 CalcScreen(num = displayNum, modifier = Modifier.weight(1f))
                                 //First Row --> C % <-
                                 Row {
-                                    ElevatedButton(onClick = {}) {
-                                        Text("Hi")
-                                    }
                                     CalcButton(
                                         sym = "C",
                                         modifier = Modifier
