@@ -8,7 +8,7 @@ A secure **vault** disguised as a **calculator**. Enter a **PIN** to unlock hidd
 **Secure Media Storage** – Moves selected images and videos to a **private directory** in internal storage.  
 **Jetpack Compose UI** – Modern and smooth UI built with **Kotlin and Jetpack Compose**.  
 **Photo Picker Integration** – Easily select images using the Android **PhotoPicker API**.  
-**Reset PIN** – Option to reset the pin by answering a **security question**.
+**Reset PIN** – Option to reset the pin by answering a **security question** that the user sets, when setting up the PIN.
 
 ## Screenshots
 
