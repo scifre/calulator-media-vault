@@ -14,20 +14,12 @@ A secure **vault** disguised as a **calculator**. Enter a **PIN** to unlock hidd
 
 Here are some screenshots:
 
-<p align="center">
-  <figure>
-    <img src="screenshots/Screenshot_20250305_195810.png" width="200"/>
-    <figcaption>Calculator Screen</figcaption>
-  </figure>
-  <figure>
-    <img src="screenshots/Screenshot_20250325_175831.png" width="200"/>
-    <figcaption>Gallery Screen - Images Tab</figcaption>
-  </figure>
-  <figure>
-    <img src="screenshots/Screenshot_20250325_175844.png" width="200"/>
-    <figcaption>Gallery Screen - Videos Tab</figcaption>
-  </figure>
+<p>
+  <img src="screenshots/Screenshot_20250305_195810.png" width="200"/>
+  <img src="screenshots/Screenshot_20250325_175831.png" width="200"/>
+  <img src="screenshots/Screenshot_20250325_175844.png" width="200"/>
 </p>
+
 
 
 
